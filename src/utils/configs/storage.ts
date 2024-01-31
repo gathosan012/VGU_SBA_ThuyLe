@@ -1,0 +1,5 @@
+export const STORAGE = {
+    PIT_TOKEN: "PIT_TOKEN",
+    PIT_USER: "PIT_USER",
+    PIT_REFRESH_TOKEN: "PIT_REFRESH_TOKEN",
+}
