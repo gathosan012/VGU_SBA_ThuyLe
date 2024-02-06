@@ -3,7 +3,7 @@ import * as httpRequest from "../utils/httpRequest";
 import authHeader from "../utils/authHeader";
 import type { HttpResponse } from "../models/httpResponse";
 import { toStringDate } from "../utils/utilityFunctions";
-import type { UserLogin } from "../models/user";
+import type { UserLogin } from "../models/AdminArea/user/user";
 import { STORAGE } from "../utils/configs/storage";
 
 export const getRecordByCode = async (code: string) => {

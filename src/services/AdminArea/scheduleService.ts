@@ -210,18 +210,17 @@ export const fetchUpdateSchedule = async (
     console.log("An error occurred when fetching: " + err.message);
     return false;
   }
-};
- */
+}; */
 
-import type { Schedule } from "../../models/schedule";
+import type { Schedule } from "../../models/schedule/schedule";
 import * as httpRequest from "../../utils/httpRequest";
 import authHeader from "../utils/authHeader";
-import type { HttpResponse } from "../../models/httpResponse";
+import type { ScheduleAPI } from "../../models/httpResponse";
 import { toStringDate } from "../utils/utilityFunctions";
 import type { UserLogin } from "../models/user";
 import { STORAGE } from "../utils/configs/storage";
 
-export const getSchedulesById = async (id: number) => {
-  const res: HttpResponse = await httpRequest.get(`schedules/${id}`);
+export const getSchedulesById = async (id: number): Promise<ScheduleAPI> => {
+  const res: ScheduleAPI = await httpRequest.get(`schedules/${id}`);
   return res;
 };

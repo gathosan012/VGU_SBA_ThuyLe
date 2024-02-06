@@ -1,4 +1,4 @@
-import type { ScheduleBus } from "../../models/scheduleBus";
+import type { ScheduleBus } from "../../models/schedule/scheduleBus";
 
 export const initScheduleBus: ScheduleBus = {
   id: 0,

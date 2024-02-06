@@ -1,5 +1,5 @@
 import type { FileModel } from "./file";
-import type { Staff, UserLogin } from "./user";
+import type { Staff, UserLogin } from "./AdminArea/user/user";
 
 export interface Record {
   id: number;

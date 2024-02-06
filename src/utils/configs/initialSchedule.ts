@@ -1,5 +1,5 @@
 // import { STORAGE } from "./storage";
-import type { Schedule } from "../../models/schedule";
+import type { Schedule } from "../../models/schedule/schedule";
 
 export const initSchedule = {
   id: 0,
