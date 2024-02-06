@@ -2,9 +2,9 @@ import { Sidebar } from "flowbite-react";
 import type { FC } from "react";
 import { useEffect, useState } from "react";
 
-import { navigationData } from '../../utils/configs/routes/navigationData';
+import { navigationData } from "../../utils/configs/routes/navigationData";
 
-type Props = {
+interface Props {
   isMobile: boolean;
 }
 
@@ -18,9 +18,10 @@ const ExampleSidebar: FC<Props> = function ({ isMobile }) {
   }, [setCurrentPage]);
 
   return (
-    <Sidebar className={isMobile ? 'w-12' : ''}>
-      <div className={`bg-white flex h-full flex-col justify-start py-2 overflow-hidden 
-            ${isMobile ? 'w-12' : 'w-64'}`}
+    <Sidebar className={isMobile ? "w-12" : ""}>
+      <div
+        className={`flex h-full flex-col justify-start overflow-hidden bg-white py-2 
+            ${isMobile ? "w-12" : "w-64"}`}
       >
         <div>
           <Sidebar.Items>
@@ -40,10 +41,12 @@ const ExampleSidebar: FC<Props> = function ({ isMobile }) {
                   href={navigation.url}
                   icon={navigation.icon}
                   className={
-                    navigation.url === currentPage ? "bg-gray-100 dark:bg-gray-700" : ""
+                    navigation.url === currentPage
+                      ? "bg-gray-100 dark:bg-gray-700"
+                      : ""
                   }
                 >
-                  {isMobile ? '' : navigation.title}
+                  {isMobile ? "" : navigation.title}
                 </Sidebar.Item>
               ))}
             </Sidebar.ItemGroup>

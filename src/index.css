@@ -45,7 +45,7 @@
 }
 
 :root {
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: "IBM Plex Sans", sans-serif;
   font-size: 14px;
   line-height: 22px;
   font-weight: 400;
@@ -98,6 +98,6 @@ input:invalid {
   border-color: red;
 }
 
-.red-star{
+.red-star {
   color: red;
 }

@@ -4,7 +4,8 @@ import { Button, Label, Modal, TextInput, Textarea } from "flowbite-react";
 import { Loading, Notify } from "notiflix";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import type { Record } from "../../models/record";
+import type { Schedule } from "../../models/schedule";
+import type { ScheduleBus } from "../../models/scheduleBus";
 import { createRecord, updateRecord } from "../../services/recordService";
 import type { HttpResponse } from "../../models/httpResponse";
 import CustomFileInput from "./CustomFileInput";
@@ -17,17 +18,21 @@ interface Props {
   type: string;
   isOpen: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  record: Record;
-  setRecord: Dispatch<SetStateAction<Record>>;
+  schedule: Schedule;
+  setSchedule: Dispatch<SetStateAction<Schedule>>;
+  scheduleBus: ScheduleBus;
+  setScheduleBus: Dispatch<SetStateAction<ScheduleBus>>;
   setIsCompleted: Dispatch<SetStateAction<boolean>>;
 }
 
-export const RecordModal: FC<Props> = function ({
+export const ScheduleModal: FC<Props> = function ({
   type,
   isOpen,
   setOpen,
-  record,
-  setRecord,
+  schedule,
+  setSchedule,
+  scheduleBus,
+  setScheduleBus,
   setIsCompleted,
 }) {
   const [file, setFile] = useState<File>();
@@ -38,27 +43,13 @@ export const RecordModal: FC<Props> = function ({
   const validateInput = () => {
     if (type === TYPE.ADD) {
       if (
-        record.staff.firstname &&
-        record.staff.lastname &&
-        record.staff.email &&
-        record.seqNo &&
-        record.serialNo &&
-        record.formNo &&
-        record.uploadFile &&
-        record.publishedDate &&
-        record.whMonthStart &&
-        record.whMonthEnd
-      )
-        setIsValid(true);
-      else setIsValid(false);
-    } else {
-      if (
-        record.seqNo &&
-        record.serialNo &&
-        record.formNo &&
-        record.publishedDate &&
-        record.whMonthStart &&
-        record.whMonthEnd
+        schedule.route?.id &&
+        schedule.departureTime &&
+        schedule.arrivalTime &&
+        schedule.date &&
+        scheduleBus.schedule.id &&
+        scheduleBus.bus?.id &&
+        scheduleBus.driver?.id
       )
         setIsValid(true);
       else setIsValid(false);
