@@ -322,7 +322,7 @@ export const RecordModal: FC<Props> = function ({
               <CustomFileInput
                 file={file}
                 setFile={setFile}
-                fileName={record.file?.name || ""}
+                fileName={record.file.name}
               />
             </div>
           )}

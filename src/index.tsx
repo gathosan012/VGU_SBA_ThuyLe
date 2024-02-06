@@ -11,7 +11,8 @@ import LogInPage from "./pages/Login";
 import RecordPage from "./pages/AdminArea/Record";
 import { PrivateRoutes } from "./components/Routes/PrivateRoute";
 import { APPLICATION_URL } from "./utils/configs/routes/applicationUrl";
-import Schedule from "./pages/AdminArea/Schedule";
+import SchedulePage from "./pages/AdminArea/Schedule";
+import DashboardPage from "./pages/AdminArea/Dashboard";
 
 const container = document.getElementById("root");
 
@@ -31,7 +32,14 @@ root.render(
         <Route
         // element={<PrivateRoutes redirectPath={APPLICATION_URL.LOGIN_URL} />}
         >
-          <Route path={APPLICATION_URL.SCHEDULE_URL} element={<Schedule />} />
+          <Route
+            path={APPLICATION_URL.SCHEDULE_URL}
+            element={<SchedulePage />}
+          />
+          <Route
+            path={APPLICATION_URL.DASHBOARD_URL}
+            element={<DashboardPage />}
+          />
           <Route path={APPLICATION_URL.RECORD_URL} element={<RecordPage />} />
           {/* Add more router here */}
         </Route>

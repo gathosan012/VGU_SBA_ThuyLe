@@ -28,7 +28,7 @@ import { NOTIFY } from "../../utils/configs/notify";
 import { RES_CODE, STATUS_CODE } from "../../utils/configs/statusCode";
 import { TYPE } from "../../utils/configs/type";
 
-const RecordPage: FC = function () {
+const DashboardPage: FC = function () {
   const [search, setSearch] = useState<string>("");
 
   // modal
@@ -348,4 +348,4 @@ const RecordPage: FC = function () {
     </AdminLayout>
   );
 };
-export default RecordPage;
+export default DashboardPage;

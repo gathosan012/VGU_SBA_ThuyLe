@@ -20,7 +20,7 @@ import DataTableSchedule from "../../components/AdminArea/datatable/DatatableSch
 // import Sidebar from '../../../components/Sidebar/Sidebar';
 import { motion } from "framer-motion";
 
-const Schedule: FC = function () {
+const SchedulePage: FC = function () {
   /* //   const theme = useTheme();
   const [open, setOpen] = useState(false);
 
@@ -79,4 +79,4 @@ const Schedule: FC = function () {
   );
 };
 
-export default Schedule;
+export default SchedulePage;

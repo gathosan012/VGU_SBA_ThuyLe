@@ -33,7 +33,7 @@ const LogInPage: FC = function () {
           Cookies.set(STORAGE.PIT_TOKEN, token, { expires: 30 });
           Cookies.set(STORAGE.PIT_ROLE, role, { expires: 30 });
         }
-        navigate(APPLICATION_URL.RECORD_URL);
+        navigate(APPLICATION_URL.DASHBOARD_URL);
         Loading.remove();
       } else {
         Notify.failure(NOTIFY.SERVER_ERROR);

@@ -214,9 +214,9 @@ export const fetchUpdateSchedule = async (
  */
 
 import type { Schedule } from "../../models/schedule";
-import * as httpRequest from "../utils/httpRequest";
+import * as httpRequest from "../../utils/httpRequest";
 import authHeader from "../utils/authHeader";
-import type { HttpResponse } from "../models/httpResponse";
+import type { HttpResponse } from "../../models/httpResponse";
 import { toStringDate } from "../utils/utilityFunctions";
 import type { UserLogin } from "../models/user";
 import { STORAGE } from "../utils/configs/storage";
