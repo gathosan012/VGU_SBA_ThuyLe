@@ -212,15 +212,96 @@ export const fetchUpdateSchedule = async (
   }
 }; */
 
-import type { Schedule } from "../../models/schedule/schedule";
+import type { Schedule } from "../../models/AdminArea/schedule/schedule";
 import * as httpRequest from "../../utils/httpRequest";
-import authHeader from "../utils/authHeader";
-import type { ScheduleAPI } from "../../models/httpResponse";
-import { toStringDate } from "../utils/utilityFunctions";
-import type { UserLogin } from "../models/user";
-import { STORAGE } from "../utils/configs/storage";
+import authHeader from "../../utils/authHeader";
+// import type { ScheduleAPI } from "../../models/httpResponse";
+// import { toStringDate } from "../../utils/utilityFunctions";
+// import type { UserLogin } from "../models/AdminArea/user/user";
+// import { STORAGE } from "../utils/configs/storage";
+interface ApiResponse<T> {
+  data: T;
+  status: number;
+}
 
-export const getSchedulesById = async (id: number): Promise<ScheduleAPI> => {
-  const res: ScheduleAPI = await httpRequest.get(`schedules/${id}`);
-  return res;
+export const getScheduleById = async (
+  id: number
+): Promise<ApiResponse<Schedule>> => {
+  const res = await httpRequest.get(`schedules/${id}`);
+  return { data: res.data, status: res.status };
+};
+
+export const searchSchedulePagination = async (
+  startStationId: number | null,
+  endStationId: number | null,
+  date: string | null
+): Promise<ApiResponse<Schedule[]>> => {
+  try {
+    const res = await httpRequest.get("/api/schedules/search", {
+      params: {
+        startStationId,
+        endStationId,
+        date,
+      },
+      headers: authHeader(),
+    });
+
+    return { data: res.data, status: res.status };
+  } catch (error) {
+    const errorMessage = (error as Error).message;
+    throw new Error("Failed to fetch schedules: " + errorMessage);
+  }
+};
+
+export const getAllSchedule = async (): Promise<ApiResponse<Schedule>> => {
+  const res = await httpRequest.get("schedules");
+  return { data: res.data, status: res.status };
+};
+
+export const updateSchedule = async (
+  schedule: Schedule
+): Promise<ApiResponse<Schedule>> => {
+  const id = schedule.id ?? null;
+  const routeId = schedule.route?.id ?? null;
+  const departureTime = schedule.departureTime ?? null;
+  const arrivalTime = schedule.arrivalTime ?? null;
+  const date = schedule.date ?? null;
+
+  const updateSchedule = {
+    id,
+    routeId,
+    departureTime,
+    arrivalTime,
+    date,
+  };
+
+  const res = await httpRequest.put(`schedules/${id}`, updateSchedule, {
+    headers: authHeader(),
+  });
+
+  return { data: res.data, status: res.status };
+};
+
+export const deleteSchedule = async (
+  id: number
+): Promise<ApiResponse<Schedule>> => {
+  const res = await httpRequest.del(`schedules/${id}`);
+  return { data: res.data, status: res.status };
+};
+
+export const createSchedule = async (
+  schedule: Schedule
+): Promise<ApiResponse<Schedule>> => {
+  const formData: FormData = new FormData();
+
+  formData.append("routeId", schedule.route?.id?.toString() ?? "");
+  formData.append("departureTime", schedule.departureTime ?? "");
+  formData.append("arrivalTime", schedule.arrivalTime ?? "");
+  formData.append("date", schedule.date ?? "");
+
+  const res = await httpRequest.post("schedules", formData, {
+    headers: authHeader(),
+  });
+
+  return { data: res.data, status: res.status };
 };

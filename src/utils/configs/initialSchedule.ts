@@ -1,25 +1,23 @@
-// import { STORAGE } from "./storage";
-import type { Schedule } from "../../models/schedule/schedule";
+import type { Schedule } from "../../models/AdminArea/schedule/schedule";
+import type { Route } from "../../models/AdminArea/route/route";
 
-export const initSchedule = {
+export const initSchedule: Schedule = {
   id: 0,
   route: {
     id: 0,
     routeName: "",
-    stations: [
-      {
+    stations: {
+      id: 0,
+      station: {
         id: 0,
-        station: {
-          id: 0,
-          stationName: "",
-          address: "",
-        },
-        stopOrder: 0,
-        arrivalTime: "",
+        name: "",
+        address: "",
       },
-    ],
-  },
+      stopOrder: 0,
+      arrivalTime: "",
+    },
+  } as Route,
   departureTime: "",
   arrivalTime: "",
   date: "",
-} as Schedule;
+};

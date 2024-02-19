@@ -10,6 +10,7 @@ import {
 } from "react-icons/hi";
 
 import AdminLayout from "../../layouts/AdminArea/AdminLayout";
+import { ScheduleModal } from "../../components/AdminArea/ScheduleModal";
 import { HttpResponse } from "../../models/httpResponse";
 
 /* import "./schedule.scss";
