@@ -5,13 +5,16 @@ import { Loading, Notify } from "notiflix";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import type { ScheduleBus } from "../../models/AdminArea/schedule/scheduleBus";
-import { createRecord, updateRecord } from "../../services/recordService";
-import type { HttpResponse } from "../../models/httpResponse";
-import CustomFileInput from "./CustomFileInput";
-import { initRecord } from "../../utils/configs/initialRecord";
+// import type { HttpResponse } from "../../models/httpResponse";
+// import CustomFileInput from "./CustomFileInput";
 import { NOTIFY } from "../../utils/configs/notify";
 import { TYPE } from "../../utils/configs/type";
-import { RES_CODE } from "../../utils/configs/statusCode";
+// import { RES_CODE } from "../../utils/configs/statusCode";
+import {
+  createScheduleBus,
+  updateScheduleBus,
+} from "../../services/AdminArea/scheduleBusService";
+import { initScheduleBus } from "../../utils/configs/initialScheduleBus";
 
 interface Props {
   type: string;
@@ -48,32 +51,33 @@ export const ScheduleModal: FC<Props> = function ({
   };
 
   const handleSubmit = async () => {
+    // eslint-disable-next-line no-debugger
     debugger;
     try {
       if (type === TYPE.ADD) {
         Loading.hourglass();
-        const res: HttpResponse = await createRecord(record);
-        if (res.resCode === RES_CODE.OK) {
+        const res = await createScheduleBus(scheduleBus);
+        if (res.status === 201) {
           setOpen(false);
-          setRecord(initRecord);
+          setScheduleBus(initScheduleBus);
           setIsCompleted(true);
           Loading.remove();
           Notify.success(NOTIFY.CREATE_SUCCESS);
         } else {
-          Notify.failure(res.resMsg.message || res.resMsg);
+          // Notify.failure(res.resMsg.message || res.resMsg);
           Loading.remove();
         }
       } else {
         Loading.hourglass();
-        const res: HttpResponse = await updateRecord(record);
-        if (res.resCode === RES_CODE.OK) {
+        const res = await updateScheduleBus(scheduleBus);
+        if (res.status === 200) {
           setOpen(false);
-          setRecord(initRecord);
+          setScheduleBus(initScheduleBus);
           setIsCompleted(true);
           Loading.remove();
           Notify.success(NOTIFY.UPDATE_SUCCESS);
         } else {
-          Notify.failure(res.resMsg.message || res.resMsg);
+          // Notify.failure(res.resMsg.message || res.resMsg);
           Loading.remove();
         }
       }
@@ -84,27 +88,28 @@ export const ScheduleModal: FC<Props> = function ({
   };
 
   useEffect(() => {
-    setRecord({
-      ...record,
-      uploadFile: file!,
+    setScheduleBus({
+      ...scheduleBus,
+      // uploadFile: file!,
     });
-  }, [file]);
+    // }, [file]);
+  }, []);
 
   useEffect(() => {
     validateInput();
-  }, [record]);
+  }, [scheduleBus]);
 
   return (
     <>
       <Modal
         onClose={() => {
           setOpen(false);
-          setRecord(initRecord);
+          setScheduleBus(initScheduleBus);
         }}
         show={isOpen}
       >
         <Modal.Header className="border-b border-gray-200 !p-6 dark:border-gray-700">
-          <strong>{type == TYPE.ADD ? "Add" : "Edit"} record</strong>
+          <strong>{type == TYPE.ADD ? "Add" : "Edit"} Schedule Bus</strong>
         </Modal.Header>
         <Modal.Body>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -117,14 +122,15 @@ export const ScheduleModal: FC<Props> = function ({
                     <TextInput
                       id="firstname"
                       name="firstname"
-                      value={record.staff.firstname}
-                      onChange={(e) => {
-                        setRecord({
-                          ...record,
-                          staff: {
+                      // value={record.staff.firstname}
+                      // onChange={(e) => {
+                      onChange={() => {
+                        setScheduleBus({
+                          ...scheduleBus,
+                          /* staff: {
                             ...record.staff,
                             firstname: e.target.value,
-                          },
+                          }, */
                         });
                       }}
                       type="text"
@@ -138,14 +144,16 @@ export const ScheduleModal: FC<Props> = function ({
                     <TextInput
                       id="lastname"
                       name="lastname"
-                      value={record.staff.lastname}
-                      onChange={(e) => {
-                        setRecord({
-                          ...record,
-                          staff: {
+                      // value={record.staff.lastname}
+
+                      // onChange={(e) => {
+                      onChange={() => {
+                        setScheduleBus({
+                          ...scheduleBus,
+                          /* staff: {
                             ...record.staff,
                             lastname: e.target.value,
-                          },
+                          }, */
                         });
                       }}
                       type="text"
@@ -159,14 +167,16 @@ export const ScheduleModal: FC<Props> = function ({
                     <TextInput
                       id="email"
                       name="email"
-                      value={record.staff.email}
-                      onChange={(e) => {
-                        setRecord({
-                          ...record,
-                          staff: {
+                      // value={record.staff.email}
+
+                      // onChange={(e) => {
+                      onChange={() => {
+                        setScheduleBus({
+                          ...scheduleBus,
+                          /* staff: {
                             ...record.staff,
                             email: e.target.value,
-                          },
+                          }, */
                         });
                       }}
                       type="email"
@@ -181,13 +191,15 @@ export const ScheduleModal: FC<Props> = function ({
               <div className="mt-1">
                 <DatePicker
                   selectsRange={true}
-                  startDate={record.whMonthStart}
-                  endDate={record.whMonthEnd}
-                  onChange={(update) => {
-                    setRecord({
-                      ...record,
-                      whMonthStart: update[0]!,
-                      whMonthEnd: update[1]!,
+                  // startDate={record.whMonthStart}
+                  // endDate={record.whMonthEnd}
+
+                  // onChange={(update) => {
+                  onChange={() => {
+                    setScheduleBus({
+                      ...scheduleBus,
+                      // whMonthStart: update[0]!,
+                      // whMonthEnd: update[1]!,
                     });
                   }}
                   isClearable={true}
@@ -202,11 +214,13 @@ export const ScheduleModal: FC<Props> = function ({
               <span className="red-star"> *</span>
               <div className="mt-1">
                 <DatePicker
-                  selected={record.publishedDate}
-                  onChange={(date) =>
-                    setRecord({
-                      ...record,
-                      publishedDate: date!,
+                  // selected={record.publishedDate}
+
+                  // onChange={(date) =>
+                  onChange={() =>
+                    setScheduleBus({
+                      ...scheduleBus,
+                      // publishedDate: date!,
                     })
                   }
                   dateFormat="dd/MM/yyyy"
@@ -220,11 +234,13 @@ export const ScheduleModal: FC<Props> = function ({
                 <TextInput
                   id="seqNo"
                   name="seqNo"
-                  value={record.seqNo}
-                  onChange={(e) => {
-                    setRecord({
-                      ...record,
-                      seqNo: +e.target.value,
+                  // value={record.seqNo}
+
+                  // onChange={(e) => {
+                  onChange={() => {
+                    setScheduleBus({
+                      ...scheduleBus,
+                      // seqNo: +e.target.value,
                     });
                   }}
                   type="number"
@@ -243,11 +259,13 @@ export const ScheduleModal: FC<Props> = function ({
                 <TextInput
                   id="serialNo"
                   name="serialNo"
-                  value={record.serialNo}
-                  onChange={(e) => {
-                    setRecord({
-                      ...record,
-                      serialNo: e.target.value,
+                  // value={record.serialNo}
+
+                  // onChange={(e) => {
+                  onChange={() => {
+                    setScheduleBus({
+                      ...scheduleBus,
+                      // serialNo: e.target.value,
                     });
                   }}
                   type="text"
@@ -264,11 +282,13 @@ export const ScheduleModal: FC<Props> = function ({
                 <TextInput
                   id="formNo"
                   name="formNo"
-                  value={record.formNo}
-                  onChange={(e) => {
-                    setRecord({
-                      ...record,
-                      formNo: e.target.value,
+                  // value={record.formNo}
+
+                  // onChange={(e) => {
+                  onChange={() => {
+                    setScheduleBus({
+                      ...scheduleBus,
+                      // formNo: e.target.value,
                     });
                   }}
                   type="text"
@@ -286,14 +306,19 @@ export const ScheduleModal: FC<Props> = function ({
               <Textarea
                 id="Description"
                 name="Description"
-                value={record.description}
-                onChange={(e) =>
-                  setRecord({ ...record, description: e.target.value })
+                // value={record.description}
+
+                // onChange={(e) =>
+                onChange={() =>
+                  setScheduleBus({
+                    ...scheduleBus,
+                    // description: e.target.value,
+                  })
                 }
               />
             </div>
           </div>
-          {type === TYPE.ADD && (
+          {/* {type === TYPE.ADD && (
             <div className="max-w mt-2" id="fileUpload">
               <div className="mb-2 block">
                 <Label htmlFor="file" defaultValue="Upload file">
@@ -307,14 +332,14 @@ export const ScheduleModal: FC<Props> = function ({
                 fileName={record.file.name}
               />
             </div>
-          )}
+          )} */}
         </Modal.Body>
         <Modal.Footer className="justify-end">
           <Button
             color="failure"
             onClick={() => {
               setOpen(false);
-              setRecord(initRecord);
+              setScheduleBus(initScheduleBus);
             }}
           >
             Cancel

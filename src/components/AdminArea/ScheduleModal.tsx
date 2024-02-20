@@ -93,6 +93,7 @@ export const ScheduleModal: FC<Props> = function ({
       ...schedule,
       // uploadFile: file!,
     });
+    // }, [file]);
   }, []);
 
   useEffect(() => {

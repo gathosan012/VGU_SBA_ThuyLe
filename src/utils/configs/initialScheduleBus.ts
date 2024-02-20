@@ -1,4 +1,8 @@
-import type { ScheduleBus } from "../../models/schedule/scheduleBus";
+import type { Bus } from "../../models/AdminArea/bus/bus";
+import type { Driver } from "../../models/AdminArea/driver/driver";
+import type { Route } from "../../models/AdminArea/route/route";
+import type { Schedule } from "../../models/AdminArea/schedule/schedule";
+import type { ScheduleBus } from "../../models/AdminArea/schedule/scheduleBus";
 
 export const initScheduleBus: ScheduleBus = {
   id: 0,
@@ -7,23 +11,21 @@ export const initScheduleBus: ScheduleBus = {
     route: {
       id: 0,
       routeName: "",
-      stations: [
-        {
+      stations: {
+        id: 0,
+        station: {
           id: 0,
-          station: {
-            id: 0,
-            stationName: "",
-            address: "",
-          },
-          stopOrder: 0,
-          arrivalTime: "",
+          name: "",
+          address: "",
         },
-      ],
-    },
+        stopOrder: 0,
+        arrivalTime: "",
+      },
+    } as Route,
     departureTime: "",
     arrivalTime: "",
     date: "",
-  },
+  } as Schedule,
   bus: {
     id: 0,
     busNumber: "",
@@ -38,7 +40,7 @@ export const initScheduleBus: ScheduleBus = {
       statusName: "",
     },
     description: "",
-  },
+  } as Bus,
   driver: {
     id: 0,
     fullname: "",
@@ -47,13 +49,21 @@ export const initScheduleBus: ScheduleBus = {
     role: {
       id: 0,
       roleName: "",
-      permissions: [],
-      authorities: [{ authority: "" }],
+      permissions: {
+        id: 0,
+        canCreate: true,
+        canRead: true,
+        canUpdate: true,
+        canDelete: true,
+      },
+      authorities: {
+        authority: "",
+      },
     },
     status: {
       id: 0,
       statusName: "",
     },
-  },
+  } as Driver,
   leftSeats: 0,
 };
