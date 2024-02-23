@@ -3,6 +3,7 @@ export const APPLICATION_URL = {
   RECORD_URL: "/record",
   DASHBOARD_URL: "/dashboard",
   LOGIN_URL: "/login",
+  STATION_URL: "/stations",
 
   SCHEDULE_URL: "/schedule",
 

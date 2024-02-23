@@ -7,5 +7,5 @@ export const resendEmail = async (record: Record) => {
   const res: HttpResponse = await httpRequest.post(`mails`, record, {
     headers: authHeader(),
   });
-  return res;
+  return { data: res, status: 200 };
 };

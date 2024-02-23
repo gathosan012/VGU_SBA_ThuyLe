@@ -1,106 +1,52 @@
-// import { formatDate } from "../utils/date-helper";
-import axios from "axios";
+import * as httpRequest from "../../utils/httpRequest";
+import type { Station } from "../../models/AdminArea/station/station";
 
-// Set up Axios withCredentials globally
-// axios.defaults.withCredentials = true;
+interface ApiResponse<T> {
+  data: T;
+  status: number;
+}
 
-export const fetchGetAllStations = async (
-  apiStationUrl: string,
-  token: string
-) => {
+/* export const getAllStation = async (): Promise<ApiResponse<Stations[]>> => {
   try {
-    const response = await axios.get(apiStationUrl, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    console.log("Fetched successfully ...");
+    // Make the API request to fetch stations
+    const res = await httpRequest.get("stations");
 
-    const data = response.data.map((element: any) => ({
-      ...element,
-      stationName: element.stationName || "N/A",
-      address: element.address || "N/A",
+    // Log the response for debugging
+    console.log("Response from station API:", res);
+
+    // Check if the response status is successful
+    if (res.status !== 200) {
+      throw new Error(`Failed to fetch stations. Status: ${res.status}`);
+    }
+
+    // Assuming the response data is an array of stations
+    const stationData: Station[] = res;
+
+    // Transform stationData into the desired format (Stations[])
+    const transformedStations: Stations[] = stationData.map((station) => ({
+      id: station.id,
+      station: {
+        id: station.id,
+        stationName: station.stationName,
+        address: null, // You can adjust this based on your data
+      },
+      stopOrder: null,
+      arrivalTime: null,
     }));
 
-    return data;
-  } catch (err: any) {
-    console.log("An error occurred when fetching: " + err.message);
-    return [];
+    console.log("Transformed stations:", transformedStations);
+
+    // Return the transformed data along with the response status
+    return { data: transformedStations, status: res.status };
+  } catch (error: any) {
+    // Handle errors
+    console.error("Error fetching stations:", error.message);
+    throw new Error(`Failed to fetch station data: ${error.message}`);
   }
 };
+ */
 
-export const fetchDeleteStation = async (
-  apiStationUrl: string,
-  id: number,
-  token: string
-) => {
-  try {
-    const data = { stationID: id };
-    const response = await axios.delete(apiStationUrl, {
-      data,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (response.status === 200) {
-      console.log(`Station with ${id} deleted successfully...`);
-      return true;
-    } else {
-      return false;
-    }
-  } catch (err: any) {
-    console.log("An error occurred when fetching: " + err.message);
-    return false;
-  }
-};
-
-export const fetchCreateStation = async (
-  apiStationUrl: string,
-  inputs: any,
-  token: string
-) => {
-  try {
-    const response = await axios.post(apiStationUrl, inputs, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (response.status === 201) {
-      console.log("Station created successfully...");
-      return true;
-    } else {
-      return false;
-    }
-  } catch (err: any) {
-    console.log("An error occurred when fetching: " + err.message);
-    return false;
-  }
-};
-
-export const fetchUpdateStation = async (
-  apiStationUrl: string,
-  inputs: any,
-  token: string
-) => {
-  try {
-    const response = await axios.put(apiStationUrl, inputs, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (response.status === 200) {
-      console.log(`Station with ${inputs.stationID} updated successfully...`);
-      return true;
-    } else {
-      return false;
-    }
-  } catch (err: any) {
-    console.log("An error occurred when fetching: " + err.message);
-    return false;
-  }
+export const getAllStation = async (): Promise<ApiResponse<Station>> => {
+  const res = await httpRequest.get("stations");
+  return { data: res, status: 200 };
 };

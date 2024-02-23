@@ -228,7 +228,7 @@ export const getScheduleById = async (
   id: number
 ): Promise<ApiResponse<Schedule>> => {
   const res = await httpRequest.get(`schedules/${id}`);
-  return { data: res.data, status: res.status };
+  return { data: res, status: 200 };
 };
 
 export const searchSchedulePagination = async (
@@ -246,7 +246,7 @@ export const searchSchedulePagination = async (
       headers: authHeader(),
     });
 
-    return { data: res.data, status: res.status };
+    return { data: res, status: 200 };
   } catch (error) {
     const errorMessage = (error as Error).message;
     throw new Error("Failed to fetch schedules: " + errorMessage);
@@ -255,7 +255,8 @@ export const searchSchedulePagination = async (
 
 export const getAllSchedule = async (): Promise<ApiResponse<Schedule>> => {
   const res = await httpRequest.get("schedules");
-  return { data: res.data, status: res.status };
+  console.log("res: ", res);
+  return { data: res, status: 200 };
 };
 
 export const updateSchedule = async (
@@ -279,14 +280,14 @@ export const updateSchedule = async (
     headers: authHeader(),
   });
 
-  return { data: res.data, status: res.status };
+  return { data: res, status: 200 };
 };
 
 export const deleteSchedule = async (
   id: number
 ): Promise<ApiResponse<Schedule>> => {
   const res = await httpRequest.del(`schedules/${id}`);
-  return { data: res.data, status: res.status };
+  return { data: res, status: 200 };
 };
 
 export const createSchedule = async (
@@ -303,5 +304,12 @@ export const createSchedule = async (
     headers: authHeader(),
   });
 
-  return { data: res.data, status: res.status };
+  return { data: res, status: 200 };
+};
+
+export const fetchRoundPageNumber = (
+  maxSize: number,
+  limit: number
+): number => {
+  return Math.ceil(maxSize / limit);
 };

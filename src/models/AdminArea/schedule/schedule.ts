@@ -7,3 +7,4 @@ export interface Schedule {
   arrivalTime: string | null;
   date: string | null;
 }
+[];

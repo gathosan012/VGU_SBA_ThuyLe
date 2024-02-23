@@ -25,7 +25,7 @@ interface Props {
   setIsCompleted: Dispatch<SetStateAction<boolean>>;
 }
 
-export const ScheduleModal: FC<Props> = function ({
+export const ScheduleBusModal: FC<Props> = function ({
   type,
   isOpen,
   setOpen,

@@ -8,7 +8,7 @@ export default function authHeader() {
 
   if (userToken)
     return {
-      authorization: userToken,
+      authorization: `Bearer ${userToken}`,
     };
   else {
     return {

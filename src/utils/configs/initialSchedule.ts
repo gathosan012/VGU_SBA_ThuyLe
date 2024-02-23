@@ -6,16 +6,19 @@ export const initSchedule: Schedule = {
   route: {
     id: 0,
     routeName: "",
-    stations: {
-      id: 0,
-      station: {
+    // Change 'stations' to an array of 'Stations'
+    stations: [
+      {
         id: 0,
-        name: "",
-        address: "",
+        station: {
+          id: 0,
+          stationName: "", // Change 'name' to 'stationName'
+          address: "",
+        },
+        stopOrder: 0,
+        arrivalTime: "",
       },
-      stopOrder: 0,
-      arrivalTime: "",
-    },
+    ],
   } as Route,
   departureTime: "",
   arrivalTime: "",

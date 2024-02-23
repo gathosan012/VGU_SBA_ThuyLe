@@ -12,7 +12,7 @@ export const login = async (username: string, password: string) => {
     username,
     password,
   });
-  return res;
+  return { data: res, status: 200 };
 };
 
 export const logout = () => {
@@ -32,8 +32,8 @@ export const logout = () => {
 }; */
 
 /* export const refreshToken = async () => {
-  let token = Cookies.get(STORAGE.PIT_REFRESH_TOKEN);
-  let rfToken = Cookies.get(STORAGE.PIT_TOKEN);
+  const token = Cookies.get(STORAGE.PIT_REFRESH_TOKEN);
+  const rfToken = Cookies.get(STORAGE.PIT_TOKEN);
   const res: HttpResponse = await httpRequest.post(
     "auth/refresh",
     { refreshToken: token },
@@ -49,8 +49,8 @@ export const logout = () => {
   } else {
     return redirect("/login");
   }
-}; */
-
+};
+ */
 /* export const refreshToken = () => {
   return false;
 }; */

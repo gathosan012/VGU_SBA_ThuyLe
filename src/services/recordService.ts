@@ -8,7 +8,7 @@ import { STORAGE } from "../utils/configs/storage";
 
 export const getRecordByCode = async (code: string) => {
   const res: HttpResponse = await httpRequest.get(`records/code/${code}`);
-  return res;
+  return { data: res, status: 200 };
 };
 
 export const searchRecordPagination = async (
@@ -24,14 +24,14 @@ export const searchRecordPagination = async (
     },
     headers: authHeader(),
   });
-  return res;
+  return { data: res, status: 200 };
 };
 
 export const getLdapUsers = async () => {
   const res: HttpResponse = await httpRequest.get("ldapusers", {
     headers: authHeader(),
   });
-  return res;
+  return { data: res, status: 200 };
 };
 
 export const createRecord = async (record: Record) => {
@@ -55,7 +55,7 @@ export const createRecord = async (record: Record) => {
   const res: HttpResponse = await httpRequest.post("records", formData, {
     headers: authHeader(),
   });
-  return res;
+  return { data: res, status: 200 };
 };
 
 export const updateRecord = async (record: Record) => {
@@ -74,7 +74,7 @@ export const updateRecord = async (record: Record) => {
     headers: authHeader(),
   });
 
-  return res;
+  return { data: res, status: 200 };
 };
 
 export const download = async (path: string) => {
@@ -83,7 +83,7 @@ export const download = async (path: string) => {
     { path },
     { responseType: "blob" }
   );
-  return res;
+  return { data: res, status: 200 };
 };
 
 export const publishRecord = async (id: number) => {
@@ -94,7 +94,7 @@ export const publishRecord = async (id: number) => {
       headers: authHeader(),
     }
   );
-  return res;
+  return { data: res, status: 200 };
 };
 
 export const withdrawRecord = async (id: number) => {
@@ -103,5 +103,5 @@ export const withdrawRecord = async (id: number) => {
     {},
     { headers: authHeader() }
   );
-  return res;
+  return { data: res, status: 200 };
 };

@@ -1,5 +1,5 @@
 export interface Station {
   id: number | null;
-  name: string | null;
+  stationName: string | null;
   address: string | null;
 }

@@ -115,9 +115,9 @@ export const fetchUpdateScheduleBus = async (
     console.log("An error occurred when fetching: " + err.message);
     return false;
   }
-}; */
+};
 
-/* import axios from "axios";
+import axios from "axios";
 import * as fetcherRouteStation from "./routeStationService";
 import * as fetcherStation from "./stationService";
 
@@ -348,14 +348,14 @@ export const getScheduleBusById = async (
   id: number
 ): Promise<ApiResponse<ScheduleBus>> => {
   const res = await httpRequest.get(`schedules-buses/${id}`);
-  return { data: res.data, status: res.status };
+  return { data: res, status: res.status };
 };
 
 export const getAllScheduleBus = async (): Promise<
   ApiResponse<ScheduleBus>
 > => {
   const res = await httpRequest.get("schedules-buses");
-  return { data: res.data, status: res.status };
+  return { data: res, status: res.status };
 };
 
 export const updateScheduleBus = async (
@@ -379,14 +379,14 @@ export const updateScheduleBus = async (
       headers: authHeader(),
     }
   );
-  return { data: res.data, status: res.status };
+  return { data: res, status: res.status };
 };
 
 export const deleteScheduleBus = async (
   id: number
 ): Promise<ApiResponse<ScheduleBus>> => {
   const res = await httpRequest.del(`schedules-buses/${id}`);
-  return { data: res.data, status: res.status };
+  return { data: res, status: res.status };
 };
 
 export const createScheduleBus = async (
@@ -402,5 +402,5 @@ export const createScheduleBus = async (
     headers: authHeader(),
   });
 
-  return { data: res.data, status: res.status };
+  return { data: res, status: res.status };
 };
