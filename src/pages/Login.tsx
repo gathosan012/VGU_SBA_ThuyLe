@@ -24,9 +24,9 @@ const LogInPage: FC = function () {
     Loading.hourglass();
     try {
       const response = await login(username, password);
-      if (response.token) {
-        const token = response.token;
-        const role = response.role ?? ""; // Use nullish coalescing operator to provide a default value of an empty string
+      if (response.data.token) {
+        const token = response.data.token;
+        const role = response.data.role ?? ""; // Use nullish coalescing operator to provide a default value of an empty string
         sessionStorage.setItem(STORAGE.PIT_TOKEN, token);
         sessionStorage.setItem(STORAGE.PIT_ROLE, role);
         if (isRememberMe) {

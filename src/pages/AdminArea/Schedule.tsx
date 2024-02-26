@@ -146,6 +146,7 @@ const SchedulePage: FC = () => {
     []
   );
   const [stationNames, setStationNames] = useState<string[]>([]);
+  const [stationIds, setStationIds] = useState<string[]>([]);
 
   const handleDateChange = (date: Date | null) => {
     if (date) {
@@ -219,19 +220,17 @@ const SchedulePage: FC = () => {
         const response = await getAllStation();
         if (response.status === 200) {
           console.log("response.data: ", response.data);
-          // Check if response.data is an array
           if (Array.isArray(response.data)) {
-            // Use flatMap to extract and flatten the station names array
             const stationName: string[] = response.data.flatMap(
-              (station: Station) => {
-                // Use optional chaining to access 'stationName'
-                return station.stationName ?? "";
-              }
+              (station: Station) => station.stationName ?? ""
             );
-
+            const stationId: string[] = response.data.flatMap(
+              (station: Station) => station.id?.toString() ?? ""
+            );
             console.log("stationName: ", stationName);
-            // Set the station names state
+            console.log("stationId: ", stationId);
             setStationNames(stationName);
+            setStationIds(stationId);
           } else {
             console.error("Response data is not an array:", response.data);
           }
@@ -379,14 +378,23 @@ const SchedulePage: FC = () => {
                           <Dropdown.Item
                             key={index}
                             onClick={() => {
-                              console.log(
+                              /* console.log(
                                 "Selected Start Station:",
                                 stationName
+                              );
+                              console.log(
+                                "Selected Start Station Id:",
+                                stationIds[index]
+                              ); */
+                              console.log(
+                                `Selected Start Station: ${stationName} with stationId: ${stationIds[index]}`,
                               );
                               setStartStation(stationName);
                             }}
                           >
                             {stationName}
+                            {/* {`${stationName} (${stationIds[index]})`}{" "} */}
+                            {/* Display both stationName and stationId */}
                           </Dropdown.Item>
                         ))}
                       </Dropdown>
@@ -407,18 +415,30 @@ const SchedulePage: FC = () => {
                           const selectedValue = (e.target as HTMLSelectElement)
                             .value;
                           console.log("Selected End Station:", selectedValue);
-                          setEndStation(selectedValue);
+                          setStartStation(selectedValue);
                         }}
                       >
                         {stationNames.map((stationName, index) => (
                           <Dropdown.Item
                             key={index}
                             onClick={() => {
-                              console.log("Selected End Station:", stationName);
+                              /* console.log(
+                                "Selected Start Station:",
+                                stationName
+                              );
+                              console.log(
+                                "Selected Start Station Id:",
+                                stationIds[index]
+                              ); */
+                              console.log(
+                                `Selected End Station: ${stationName} with stationId: ${stationIds[index]}`,
+                              );
                               setEndStation(stationName);
                             }}
                           >
                             {stationName}
+                            {/* {`${stationName} (${stationIds[index]})`}{" "} */}
+                            {/* Display both stationName and stationId */}
                           </Dropdown.Item>
                         ))}
                       </Dropdown>
