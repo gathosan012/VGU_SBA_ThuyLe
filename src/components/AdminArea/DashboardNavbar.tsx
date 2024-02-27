@@ -1,19 +1,18 @@
-import { Navbar } from 'flowbite-react';
+import { Navbar } from "flowbite-react";
 import { FC } from "react";
 
-import logo from '../../assets/images/VGU-Logo.svg';
-import { logout } from '../../services/authService';
-import { useNavigate } from 'react-router';
-import { APPLICATION_URL } from '../../utils/configs/routes/applicationUrl';
+import logo from "../../assets/images/VGU-Logo.svg";
+import { logout } from "../../services/authService";
+import { useNavigate } from "react-router";
+import { APPLICATION_URL } from "../../utils/configs/routes/applicationUrl";
 
 const DashboardNavbar: FC = () => {
-
   const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
     navigate(APPLICATION_URL.LOGIN_URL);
-  }
+  };
 
   return (
     <Navbar fluid>
@@ -42,7 +41,7 @@ const DashboardNavbar: FC = () => {
         </div>
       </div>
     </Navbar>
-  )
-}
+  );
+};
 
-export default DashboardNavbar
+export default DashboardNavbar;

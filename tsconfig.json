@@ -2,11 +2,7 @@
   "compilerOptions": {
     "target": "ESNext",
     "useDefineForClassFields": true,
-    "lib": [
-      "DOM",
-      "DOM.Iterable",
-      "ESNext"
-    ],
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "allowJs": false,
     "skipLibCheck": true,
     "esModuleInterop": false,
@@ -28,7 +24,7 @@
     "noUncheckedIndexedAccess": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "sourceMap": true,
+    "sourceMap": true
   },
   "include": [
     "src",
@@ -36,9 +32,8 @@
     "**/*.mjs",
     "**/*.ts",
     "**/*.tsx",
-    "src/assets/images"
-, "pm2.config.js"  ],
-  "exclude": [
-    "node_modules"
-  ]
+    "src/assets/images",
+    "pm2.config.js"
+  ],
+  "exclude": ["node_modules"]
 }

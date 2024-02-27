@@ -1,11 +1,10 @@
 export const STATUS_CODE = {
-    ACTIVE: 1,
-    DEACTIVE: 2,
-    DELETED: 3
-}
+  ACTIVE: 1,
+  DEACTIVE: 2,
+  DELETED: 3,
+};
 
 export const RES_CODE = {
-    OK: 0,
-    ERROR: 1
-}
-
+  OK: 0,
+  ERROR: 1,
+};

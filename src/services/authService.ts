@@ -1,53 +1,33 @@
-import { redirect } from "react-router-dom";
 import Cookies from "js-cookie";
-
-import { HttpResponse } from '../models/httpResponse';
-import * as httpRequest from '../utils/httpRequest';
-import { STORAGE } from '../utils/configs/storage';
-import { RES_CODE } from "../utils/configs/statusCode";
-
+import type { LoginResponse } from "../models/httpResponse";
+import * as httpRequest from "../utils/httpRequest";
+import { STORAGE } from "../utils/configs/storage";
 
 export const login = async (username: string, password: string) => {
-    const res: HttpResponse = await httpRequest.post("auth/login", { username, password });
-    return res;
+  const res: LoginResponse = await httpRequest.post("auth/login", {
+    username,
+    password,
+  });
+  return res;
 };
+
 
 export const logout = () => {
-    sessionStorage.removeItem(STORAGE.PIT_TOKEN);
-    sessionStorage.removeItem(STORAGE.PIT_USER);
-    Cookies.remove(STORAGE.PIT_REFRESH_TOKEN);
-    Cookies.remove(STORAGE.PIT_TOKEN);
-    Cookies.remove(STORAGE.PIT_USER);
-}
+  sessionStorage.removeItem(STORAGE.PIT_TOKEN);
+  sessionStorage.removeItem(STORAGE.PIT_ROLE); 
 
-export const refreshToken = async () => {
-    const token = Cookies.get(STORAGE.PIT_REFRESH_TOKEN);
-    const rfToken = Cookies.get(STORAGE.PIT_TOKEN);
-    const res: HttpResponse = await httpRequest.post("auth/refresh", { refreshToken: token },
-        {
-            headers: { 'authorization': rfToken }
-        });
-    if (res.resCode === RES_CODE.OK) {
-        let user = Cookies.get(STORAGE.PIT_USER);
-        sessionStorage.setItem(STORAGE.PIT_TOKEN, res.payload.accessToken);
-        sessionStorage.setItem(STORAGE.PIT_USER, user as string);
-        return res.payload.accessToken;
-    } else {
-        return redirect("/login");
-    }
+  Cookies.remove(STORAGE.PIT_TOKEN);
+  Cookies.remove(STORAGE.PIT_ROLE);
 };
 
+
 export const isLogin = () => {
-    let token = sessionStorage.getItem(STORAGE.PIT_TOKEN) as string;
-    if (token)
-        return true
-    else {
-        let rfToken = Cookies.get(STORAGE.PIT_REFRESH_TOKEN);
-        let token = Cookies.get(STORAGE.PIT_TOKEN);
-        if (rfToken && token) {
-            refreshToken();
-            return true;
-        } else
-            return false;
-    }
-}
+  const token = sessionStorage.getItem(STORAGE.PIT_TOKEN)!;
+  if (token) return true;
+  else {
+    const token = Cookies.get(STORAGE.PIT_TOKEN)
+    if (token) {
+      return true;
+    } else return false;
+  }
+};
