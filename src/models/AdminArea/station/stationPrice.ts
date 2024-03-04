@@ -1,10 +1,9 @@
-import type { EndStation } from "./endStation";
-import type { StartStation } from "./startStation";
+import type { Station } from "./station";
 
 export interface StationPrice {
   id: number | null;
-  startStation: StartStation | null;
-  endStation: EndStation | null;
+  startStation: Station | null;
+  endStation: Station | null;
   price: number | null;
 }
 [];

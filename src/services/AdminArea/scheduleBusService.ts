@@ -348,14 +348,14 @@ export const getScheduleBusById = async (
   id: number
 ): Promise<ApiResponse<ScheduleBus>> => {
   const res = await httpRequest.get(`schedules-buses/${id}`);
-  return { data: res, status: res.status };
+  return { data: res, status: 200 };
 };
 
 export const getAllScheduleBus = async (): Promise<
   ApiResponse<ScheduleBus>
 > => {
   const res = await httpRequest.get("schedules-buses");
-  return { data: res, status: res.status };
+  return { data: res, status: 200 };
 };
 
 export const updateScheduleBus = async (
@@ -379,7 +379,7 @@ export const updateScheduleBus = async (
       headers: authHeader(),
     }
   );
-  return { data: res, status: res.status };
+  return { data: res, status: 200 };
 };
 
 export const deleteScheduleBus = async (
@@ -402,5 +402,5 @@ export const createScheduleBus = async (
     headers: authHeader(),
   });
 
-  return { data: res, status: res.status };
+  return { data: res, status: 200 };
 };

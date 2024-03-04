@@ -123,9 +123,10 @@ import { HttpResponse } from "../../models/httpResponse";
 import type { Stations } from "../../models/AdminArea/station/stations/stations";
 import { getAllStation } from "../../services/AdminArea/stationService";
 import { initStation } from "../../utils/configs/initialStation";
+import { getAllScheduleBus } from "../../services/AdminArea/scheduleBusService";
 
 const SchedulePage: FC = () => {
-  const [search, setSearch] = useState<string>("");
+  const [date, setDate] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   // modal
@@ -136,17 +137,26 @@ const SchedulePage: FC = () => {
   const [stations, setStations] = useState<Station[]>(initialStations);
 
   const [startStation, setStartStation] = useState<string>("");
+  const [startStationId, setStartStationId] = useState<number | null>(null);
   const [endStation, setEndStation] = useState<string>("");
+  const [endStationId, setEndStationId] = useState<number | null>(null);
+  const [departureStop, setDepartureStop] = useState("");
+  const [arrivalStop, setArrivalStop] = useState("");
 
   const [scheduleBus, setScheduleBus] = useState<ScheduleBus>(initScheduleBus);
   const [isCompleted, setIsCompleted] = useState<boolean>(false); // track on create success
   // end of modal
 
-  const [searchResult, setSearchResult] = useState<(Schedule | ScheduleBus)[]>(
+  const [searchResultSchedule, setSearchResultSchedule] = useState<Schedule[]>(
     []
   );
+
+  const [getAllScheduleBusData, setGetAllScheduleBusData] = useState<
+    ScheduleBus[]
+  >([]);
+
   const [stationNames, setStationNames] = useState<string[]>([]);
-  const [stationIds, setStationIds] = useState<string[]>([]);
+  const [stationIds, setStationIds] = useState<number[]>([]);
 
   const handleDateChange = (date: Date | null) => {
     if (date) {
@@ -176,66 +186,34 @@ const SchedulePage: FC = () => {
   const Submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // convert into filter
-    searchSchedule(search);
+    if (startStationId !== null && endStationId !== null) {
+      searchSchedule(startStationId, endStationId, date);
+    }
   };
-
-  /* useEffect(() => {
-    const fetchStationNames = async () => {
-      try {
-        const response = await getAllSchedule();
-        if (response.status === 200) {
-          // Check if response.data is an array
-          if (Array.isArray(response.data)) {
-            // Use flatMap to extract and flatten the station names array
-            const stationNames = response.data.flatMap((schedule: Schedule) => {
-              // Use optional chaining to access 'route' and 'stations'
-              const stations = schedule.route?.stations;
-              // Use optional chaining to access 'stationName'
-              return (
-                stations?.map(
-                  (station) => station.station?.stationName ?? ""
-                ) ?? []
-              );
-            });
-
-            // Set the station names state
-            setStationNames(stationNames);
-          } else {
-            console.error("Response data is not an array:", response.data);
-          }
-        } else {
-          console.error("Failed to fetch station data:", response);
-        }
-      } catch (error) {
-        console.error("An error occurred when fetching station names:", error);
-      }
-    };
-
-    fetchStationNames();
-  }, []); */
 
   useEffect(() => {
     const fetchStationNames = async () => {
       try {
-        const response = await getAllStation();
-        if (response.status === 200) {
-          console.log("response.data: ", response.data);
-          if (Array.isArray(response.data)) {
-            const stationName: string[] = response.data.flatMap(
+        const res = await getAllStation();
+        if (res.status === 200) {
+          // console.log("res.data: ", res.data);
+          if (Array.isArray(res.data)) {
+            const stationName: string[] = res.data.flatMap(
               (station: Station) => station.stationName ?? ""
             );
-            const stationId: string[] = response.data.flatMap(
-              (station: Station) => station.id?.toString() ?? ""
+            const stationId: number[] = res.data.flatMap(
+              (station: Station) => station.id ?? 0
             );
-            console.log("stationName: ", stationName);
-            console.log("stationId: ", stationId);
+            // console.log("stationName: ", stationName);
+            // console.log("stationId: ", stationId);
             setStationNames(stationName);
             setStationIds(stationId);
+            setStations(res.data);
           } else {
-            console.error("Response data is not an array:", response.data);
+            console.error("Response data is not an array:", res.data);
           }
         } else {
-          console.error("Failed to fetch station data:", response);
+          console.error("Failed to fetch station data:", res);
         }
       } catch (error) {
         console.error("An error occurred when fetching station names:", error);
@@ -245,24 +223,53 @@ const SchedulePage: FC = () => {
     fetchStationNames();
   }, []);
 
-  // Your component JSX and logic here
+  // Fetch all schedule data
+  useEffect(() => {
+    const fetchScheduleBusData = async () => {
+      try {
+        Loading.hourglass();
+        const res = await getAllScheduleBus();
+
+        if (res.status === 200 && Array.isArray(res.data)) {
+          const scheduleBusData: ScheduleBus[] = res.data.flatMap(
+            (scheduleBus: ScheduleBus) => scheduleBus
+          );
+          setGetAllScheduleBusData(scheduleBusData);
+
+          // Calculate total pages based on the length of scheduleData and LIMIT
+          setTotalPage(fetchRoundPageNumber(scheduleBusData.length, LIMIT));
+        }
+
+        Loading.remove();
+      } catch (e) {
+        // Handle error
+        Loading.remove();
+      }
+    };
+
+    fetchScheduleBusData();
+  }, []);
 
   // search handler
-  const searchSchedule = async (searchString?: string) => {
+  const searchSchedule = async (
+    startStationId?: number,
+    endStationId?: number,
+    searchString?: string
+  ) => {
     try {
       Loading.hourglass();
       const res = await searchSchedulePagination(
-        start,
-        LIMIT,
+        startStationId ?? 0,
+        endStationId ?? null,
         searchString ?? null
       );
       if (res.status === 200) {
-        setSearchResult([...res]);
-        const totalRecords = res.length;
+        setSearchResultSchedule(res.data as Schedule[]);
+        const totalSchedule = res.data.length;
         /* ---------------------------------------------- round page number logic --------------------------------------------- */
         // 50 / 10 = 5
         //  55 / 10 = 6
-        setTotalPage(fetchRoundPageNumber(totalRecords, LIMIT));
+        setTotalPage(fetchRoundPageNumber(totalSchedule, LIMIT));
         Loading.remove();
       } else {
         // Handle error or show notification
@@ -344,6 +351,138 @@ const SchedulePage: FC = () => {
     }
   }; */
 
+  /* useEffect(() => {
+    // Filter the stations array
+    const filteredStations = stations.filter(
+      (station) =>
+        station.stationName !== endStation &&
+        station.stationName !== startStation
+    );
+    console.log("Filtered Stations Array:", filteredStations);
+    console.log("stationName Array:", stationNames);
+    console.log("stationId Array:", stationIds);
+  }, [startStation, endStation, stations, stationNames, stationIds]); */
+
+  useEffect(() => {
+    const fetchAllScheduleBuses = async () => {
+      try {
+        const res = await getAllScheduleBus();
+
+        if (res.status === 200) {
+          // Assuming res.data is an array of Station objects
+          const scheduleBusData: ScheduleBus[] = Array.isArray(res.data)
+            ? res.data
+            : [res.data];
+
+          console.log("scheduleBusData Array:", scheduleBusData);
+
+          const busNumber = scheduleBusData.map(
+            (scheduleBus: ScheduleBus) => scheduleBus.bus?.busNumber
+          );
+
+          const driverFullName = scheduleBusData.map(
+            (scheduleBus: ScheduleBus) => scheduleBus.driver?.fullname ?? "N/A"
+          );
+
+          const seatCapacity = scheduleBusData.map(
+            (scheduleBus: ScheduleBus) => scheduleBus.leftSeats
+          );
+
+          console.log("busNumber Array:", busNumber);
+          console.log("driverFullName Array:", driverFullName);
+          console.log("seatCapacity Array:", seatCapacity);
+        } else {
+          console.error("Failed to fetch data for scheduleBusData array:", res);
+        }
+      } catch (error) {
+        console.error(
+          "An error occurred when fetching data for filtering stations array:",
+          error
+        );
+      }
+    };
+
+    fetchAllScheduleBuses();
+  }, []);
+
+  useEffect(() => {
+    const fetchDataForFilteringStationsArray = async () => {
+      try {
+        const res = await getAllStation();
+
+        if (res.status === 200) {
+          // Assuming res.data is an array of Station objects
+          const stationsData: Station[] = Array.isArray(res.data)
+            ? res.data
+            : [res.data];
+
+          // Filter the stations array
+          const filteredStations = stationsData.filter(
+            (station: Station) =>
+              station.stationName !== endStation &&
+              station.stationName !== startStation
+          );
+
+          console.log("Filtered Stations Array:", filteredStations);
+
+          // Extract station names and ids from the filtered stations
+          const stationNames = filteredStations.map(
+            (station: Station) => station.stationName
+          );
+          const stationIds = filteredStations.map(
+            (station: Station) => station.id
+          );
+
+          console.log("stationName in Filtered Stations Array:", stationNames);
+          console.log("stationId in Filtered Stations Array:", stationIds);
+        } else {
+          console.error(
+            "Failed to fetch data for filtering stations array:",
+            res
+          );
+        }
+      } catch (error) {
+        console.error(
+          "An error occurred when fetching data for filtering stations array:",
+          error
+        );
+      }
+    };
+
+    fetchDataForFilteringStationsArray();
+  }, [startStation, endStation]);
+
+  useEffect(() => {
+    const fetchDataForDepartureAndArrivalStop = async () => {
+      try {
+        const res = await getAllScheduleBus();
+
+        if (res.status === 200) {
+          // Assuming res.data is an array of ScheduleBus objects
+          const scheduleBusData = Array.isArray(res.data)
+            ? res.data
+            : [res.data];
+
+          console.log("scheduleBusData:", scheduleBusData);
+        }
+      } catch (error) {
+        console.error(
+          "An error occurred when fetching data for departureStop and arrivalStop: ",
+          error
+        );
+      }
+    };
+
+    fetchDataForDepartureAndArrivalStop();
+  }, []);
+
+  function formatDate(dateString: string | undefined): string {
+    if (!dateString) return ""; // Return empty string if dateString is null or undefined
+
+    const [year, month, day] = dateString.split("-");
+    return `${day}/${month}/${year}`; // Return formatted date string
+  }
+
   return (
     <AdminLayout isFooter={false}>
       <div className="px-4 pt-6">
@@ -367,36 +506,27 @@ const SchedulePage: FC = () => {
                         inline
                         name="users-search"
                         value={startStation}
-                        onChange={(e) => {
-                          const selectedValue = (e.target as HTMLSelectElement)
-                            .value;
-                          console.log("Selected Start Station:", selectedValue);
-                          setStartStation(selectedValue);
-                        }}
                       >
-                        {stationNames.map((stationName, index) => (
-                          <Dropdown.Item
-                            key={index}
-                            onClick={() => {
-                              /* console.log(
-                                "Selected Start Station:",
-                                stationName
-                              );
-                              console.log(
-                                "Selected Start Station Id:",
-                                stationIds[index]
-                              ); */
-                              console.log(
-                                `Selected Start Station: ${stationName} with stationId: ${stationIds[index]}`,
-                              );
-                              setStartStation(stationName);
-                            }}
-                          >
-                            {stationName}
-                            {/* {`${stationName} (${stationIds[index]})`}{" "} */}
-                            {/* Display both stationName and stationId */}
-                          </Dropdown.Item>
-                        ))}
+                        {stations
+                          .filter(
+                            (station) =>
+                              station.stationName !== endStation &&
+                              station.stationName !== startStation
+                          )
+                          .map((station, index) => (
+                            <Dropdown.Item
+                              key={index}
+                              onClick={() => {
+                                console.log(
+                                  `Selected Start Station: ${station.stationName} with stationId: ${station.id}`
+                                );
+                                setStartStation(station.stationName ?? "");
+                                setStartStationId(station.id);
+                              }}
+                            >
+                              {station.stationName}
+                            </Dropdown.Item>
+                          ))}
                       </Dropdown>
                     </div>
                     <div
@@ -411,36 +541,27 @@ const SchedulePage: FC = () => {
                         inline
                         name="users-search"
                         value={endStation}
-                        onChange={(e) => {
-                          const selectedValue = (e.target as HTMLSelectElement)
-                            .value;
-                          console.log("Selected End Station:", selectedValue);
-                          setStartStation(selectedValue);
-                        }}
                       >
-                        {stationNames.map((stationName, index) => (
-                          <Dropdown.Item
-                            key={index}
-                            onClick={() => {
-                              /* console.log(
-                                "Selected Start Station:",
-                                stationName
-                              );
-                              console.log(
-                                "Selected Start Station Id:",
-                                stationIds[index]
-                              ); */
-                              console.log(
-                                `Selected End Station: ${stationName} with stationId: ${stationIds[index]}`,
-                              );
-                              setEndStation(stationName);
-                            }}
-                          >
-                            {stationName}
-                            {/* {`${stationName} (${stationIds[index]})`}{" "} */}
-                            {/* Display both stationName and stationId */}
-                          </Dropdown.Item>
-                        ))}
+                        {stations
+                          .filter(
+                            (station) =>
+                              station.stationName !== startStation &&
+                              station.stationName !== endStation
+                          )
+                          .map((station, index) => (
+                            <Dropdown.Item
+                              key={index}
+                              onClick={() => {
+                                console.log(
+                                  `Selected Start Station: ${station.stationName} with stationId: ${station.id}`
+                                );
+                                setEndStation(station.stationName ?? "");
+                                setEndStationId(station.id);
+                              }}
+                            >
+                              {station.stationName}
+                            </Dropdown.Item>
+                          ))}
                       </Dropdown>
                     </div>
                     {/* <TextInput
@@ -453,9 +574,24 @@ const SchedulePage: FC = () => {
                     <div>
                       <ReactDatePicker
                         selected={selectedDate ? new Date(selectedDate) : null}
-                        onChange={(date) => handleDateChange(date)}
+                        onChange={(date) => {
+                          if (date instanceof Date && !isNaN(date.getTime())) {
+                            // Check if 'date' is a valid Date object
+                            const year = date.getFullYear();
+                            const month = String(date.getMonth() + 1).padStart(
+                              2,
+                              "0"
+                            );
+                            const day = String(date.getDate()).padStart(2, "0");
+                            const formattedDate = `${year}-${month}-${day}`;
+                            console.log("Formatted Date:", formattedDate);
+                            console.log("date:", date);
+                            setDate(formattedDate);
+                            handleDateChange(date);
+                          }
+                        }}
                         placeholderText="Select date..."
-                        dateFormat="yyyy-MM-dd" // Set the date format
+                        dateFormat="yyyy-MM-dd"
                         title="Flowbite Datepicker"
                       />
                     </div>
@@ -492,114 +628,94 @@ const SchedulePage: FC = () => {
                   {/* Table of Record page */}
                   <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
                     <Table.Head className="bg-gray-100 dark:bg-gray-700">
+                      {/* <Table.HeadCell className="action-column text-center">
+                        {null}
+                      </Table.HeadCell> */}
                       <Table.HeadCell>No.</Table.HeadCell>
                       <Table.HeadCell>Bus Number</Table.HeadCell>
                       <Table.HeadCell>Driver</Table.HeadCell>
-                      <Table.HeadCell>Seat Capacity</Table.HeadCell>
+                      <Table.HeadCell>Field Capacity</Table.HeadCell>
                       <Table.HeadCell>Route Name</Table.HeadCell>
-                      <Table.HeadCell>Time Start</Table.HeadCell>
+                      <Table.HeadCell>Route</Table.HeadCell>
+                      <Table.HeadCell>Date</Table.HeadCell>
+                      <Table.HeadCell>Departure Time</Table.HeadCell>
                       <Table.HeadCell>Arrival Time</Table.HeadCell>
+                      <Table.HeadCell>Departure Stop</Table.HeadCell>
+                      <Table.HeadCell>Arrival Stop</Table.HeadCell>
+
+                      {/* <Table.HeadCell>Price</Table.HeadCell> */}
+
                       {/* <Table.HeadCell>Owner</Table.HeadCell> */}
-                      <Table.HeadCell className="created-column">
+                      {/* <Table.HeadCell className="created-column">
                         Created{" "}
-                      </Table.HeadCell>
+                      </Table.HeadCell> */}
                       <Table.HeadCell className="action-column text-center">
                         Actions
                       </Table.HeadCell>
+                      <Table.HeadCell className="action-column text-center">
+                        {null}
+                      </Table.HeadCell>
                     </Table.Head>
                     <Table.Body className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
-                      {searchResult.length > 0 ? (
-                        searchResult.map((value, index) => (
-                          <Table.Row
-                            key={index}
-                            className="hover:bg-gray-100 dark:hover:bg-gray-700"
-                          >
-                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
-                              {index + 1}
-                            </Table.Cell>
-                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
-                              {/* {value.seqNo.toString().padStart(7, "0")} */}
-                              {(value as ScheduleBus).bus?.busNumber}
-                            </Table.Cell>
-                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
-                              {/* {toStringDate(value.whMonthStart)} -{" "} */}
-                              {/* {toStringDate(value.whMonthEnd)} */}
-                              {(value as ScheduleBus).driver?.fullname}
-                            </Table.Cell>
-                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
-                              {/* {value.serialNo} */}
-                              {(value as ScheduleBus).leftSeats}
-                            </Table.Cell>
-                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
-                              {/* {value.serialNo} */}
-                              {(value as Schedule).route?.routeName}
-                            </Table.Cell>
-                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
-                              {/* {value.formNo} */}
-                              {(value as Schedule).departureTime}
-                            </Table.Cell>
-                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
-                              {/* {value.code} */}
-                              {(value as Schedule).arrivalTime}
-                            </Table.Cell>
-                            <Table.Cell className="mr-12 flex items-center space-x-6 whitespace-nowrap  lg:mr-0">
-                              <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                                <div className="text-base font-semibold text-gray-900 dark:text-white">
-                                  {/* {value.staff.firstname} {value.staff.lastname} */}
-                                </div>
-                                <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                                  {/* {value.staff.email} */}
-                                </div>
-                              </div>
-                            </Table.Cell>
-                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
-                              <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                                <div className="text-base font-semibold text-gray-900 dark:text-white">
-                                  {/* {toStringDate(value.createdDate!)} */}
-                                </div>
-                                <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                                  {/* {toStringTime(value.createdDate!)} */}
-                                </div>
-                              </div>
-                            </Table.Cell>
-                            <Table.Cell>
-                              <div className="flex items-center gap-x-2 whitespace-nowrap">
-                                <Tooltip content="Resend email">
-                                  <button
-                                  // onClick={() => handleResendEmail(value)}
-                                  >
-                                    <HiPaperAirplane className="action-btn text-xl" />
-                                  </button>
-                                </Tooltip>
-                                <Tooltip content="Edit">
-                                  <button
-                                    onClick={() => {
-                                      setIsOpen(true);
-                                      setType(TYPE.EDIT);
-                                      setSchedule({
-                                        ...value,
-                                        route: null,
-                                        departureTime: null,
-                                        arrivalTime: null,
-                                        date: null,
-                                      });
-                                      setScheduleBus({
+                      {searchResultSchedule.length > 0
+                        ? searchResultSchedule.map((value, index) => (
+                            <Table.Row
+                              key={index}
+                              className="hover:bg-gray-100 dark:hover:bg-gray-700"
+                            >
+                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                                {index + 1}
+                              </Table.Cell>
+                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                                {/* {value.serialNo} */}
+                                {(value as Schedule).route?.routeName}
+                              </Table.Cell>
+                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                                {/* {value.formNo} */}
+                                {(value as Schedule).departureTime}
+                              </Table.Cell>
+                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                                {/* {value.code} */}
+                                {(value as Schedule).arrivalTime}
+                              </Table.Cell>
+                              <Table.Cell>
+                                <div className="flex items-center gap-x-2 whitespace-nowrap">
+                                  <Tooltip content="Resend email">
+                                    <button
+                                    // onClick={() => handleResendEmail(value)}
+                                    >
+                                      <HiPaperAirplane className="action-btn text-xl" />
+                                    </button>
+                                  </Tooltip>
+                                  <Tooltip content="Edit">
+                                    <button
+                                      onClick={() => {
+                                        setIsOpen(true);
+                                        setType(TYPE.EDIT);
+                                        setSchedule({
+                                          ...value,
+                                          route: null,
+                                          departureTime: null,
+                                          arrivalTime: null,
+                                          date: null,
+                                        });
+                                        /* setScheduleBus({
                                         ...value,
                                         schedule: null,
                                         bus: null,
                                         driver: null,
                                         leftSeats: null,
-                                      });
-                                    }}
-                                    /* disabled={
+                                      }); */
+                                      }}
+                                      /* disabled={
                                       value.status === STATUS_CODE.DEACTIVE
                                     } */
-                                  >
-                                    <HiPencil className="action-btn text-xl" />
-                                  </button>
-                                </Tooltip>
+                                    >
+                                      <HiPencil className="action-btn text-xl" />
+                                    </button>
+                                  </Tooltip>
 
-                                {/* <Tooltip content="Publish">
+                                  {/* <Tooltip content="Publish">
                                   <button
                                   // disabled={
                                   //     value.status === STATUS_CODE.ACTIVE
@@ -612,7 +728,7 @@ const SchedulePage: FC = () => {
                                   </button>
                                 </Tooltip> */}
 
-                                {/* <Tooltip content="Withdraw">
+                                  {/* <Tooltip content="Withdraw">
                                   <button
                                   // disabled={
                                   //     value.status === STATUS_CODE.DEACTIVE
@@ -622,21 +738,126 @@ const SchedulePage: FC = () => {
                                     <HiReply className={`action-btn text-xl`} />
                                   </button>
                                 </Tooltip> */}
-                              </div>
-                            </Table.Cell>
-                          </Table.Row>
-                        ))
-                      ) : (
-                        <Table.Row>
-                          <Table.Cell colSpan={10} className="text-center">
-                            No Data Found!
-                          </Table.Cell>
-                        </Table.Row>
-                      )}
+                                </div>
+                              </Table.Cell>
+                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                                {null}
+                              </Table.Cell>
+                            </Table.Row>
+                          ))
+                        : getAllScheduleBusData.map((value, index) => (
+                            <Table.Row
+                              key={index}
+                              className="hover:bg-gray-100 dark:hover:bg-gray-700"
+                            >
+                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                                {index + 1}
+                              </Table.Cell>
+                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                                {(value as ScheduleBus).bus?.busNumber}
+                              </Table.Cell>
+                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                                {/* {value.serialNo} */}
+                                {(value as ScheduleBus).driver?.fullname ??
+                                  "N/A"}
+                              </Table.Cell>
+                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                                {/* {value.serialNo} */}
+                                {(value as ScheduleBus).bus?.capacity}
+                              </Table.Cell>
+                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                                {
+                                  (value as ScheduleBus).schedule?.route
+                                    ?.routeName
+                                }
+                              </Table.Cell>
+                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                                {/* {value.serialNo} */}
+                                {(value as ScheduleBus).schedule?.route?.id}
+                              </Table.Cell>
+                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                                {/* {value.code} */}
+                                {formatDate(
+                                  (value as ScheduleBus).schedule?.date ?? ""
+                                )}
+                              </Table.Cell>
+                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                                {(value as ScheduleBus).schedule?.departureTime}
+                              </Table.Cell>
+                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                                {/* {value.code} */}
+                                {(value as ScheduleBus).schedule?.arrivalTime}
+                              </Table.Cell>
+                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                                {departureStop}
+                              </Table.Cell>
+                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                                {arrivalStop}
+                              </Table.Cell>
+                              <Table.Cell>
+                                <div className="flex items-center gap-x-2 whitespace-nowrap">
+                                  <Tooltip content="Resend email">
+                                    <button
+                                    // onClick={() => handleResendEmail(value)}
+                                    >
+                                      <HiPaperAirplane className="action-btn text-xl" />
+                                    </button>
+                                  </Tooltip>
+                                  <Tooltip content="Edit">
+                                    <button
+                                      onClick={() => {
+                                        setIsOpen(true);
+                                        setType(TYPE.EDIT);
+                                        setSchedule({
+                                          ...value,
+                                          route: null,
+                                          departureTime: null,
+                                          arrivalTime: null,
+                                          date: null,
+                                        });
+                                      }}
+                                      /* disabled={
+                                      value.status === STATUS_CODE.DEACTIVE
+                                    } */
+                                    >
+                                      <HiPencil className="action-btn text-xl" />
+                                    </button>
+                                  </Tooltip>
+
+                                  {/* <Tooltip content="Publish">
+                                  <button
+                                  // disabled={
+                                  //     value.status === STATUS_CODE.ACTIVE
+                                  //   }
+                                  //   onClick={() => handlePublish(value.id)}
+                                  >
+                                    <HiStatusOnline
+                                      className={`action-btn text-xl`}
+                                    />
+                                  </button>
+                                </Tooltip> */}
+
+                                  {/* <Tooltip content="Withdraw">
+                                  <button
+                                  // disabled={
+                                  //     value.status === STATUS_CODE.DEACTIVE
+                                  //   }
+                                  //   onClick={() => handleWithdraw(value.id)}
+                                  >
+                                    <HiReply className={`action-btn text-xl`} />
+                                  </button>
+                                </Tooltip> */}
+                                </div>
+                              </Table.Cell>
+                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                                {null}
+                              </Table.Cell>
+                            </Table.Row>
+                          ))}
                     </Table.Body>
                   </Table>
                   {/* Pagination of table */}
-                  {searchResult.length > 0 && (
+                  {searchResultSchedule.length > 0 && (
                     <Pagination
                       currentPage={page}
                       onPageChange={(page) => {
@@ -661,14 +882,14 @@ const SchedulePage: FC = () => {
           setIsCompleted={setIsCompleted}
         />
 
-        <ScheduleBusModal
+        {/* <ScheduleBusModal
           type={type}
           isOpen={isOpen}
           setOpen={setIsOpen}
           scheduleBus={scheduleBus}
           setScheduleBus={setScheduleBus}
           setIsCompleted={setIsCompleted}
-        />
+        /> */}
       </div>
     </AdminLayout>
   );

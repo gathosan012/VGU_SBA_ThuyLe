@@ -16,7 +16,7 @@ export const navigationData: Navigation[] = [
 
   {
     icon: HiClipboardList,
-    title: "Schedule Management",
+    title: "Schedule",
     url: APPLICATION_URL.SCHEDULE_URL,
   },
   // {

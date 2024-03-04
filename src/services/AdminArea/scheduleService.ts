@@ -215,6 +215,7 @@ export const fetchUpdateSchedule = async (
 import type { Schedule } from "../../models/AdminArea/schedule/schedule";
 import * as httpRequest from "../../utils/httpRequest";
 import authHeader from "../../utils/authHeader";
+import type { ScheduleBus } from "../../models/AdminArea/schedule/scheduleBus";
 // import type { ScheduleAPI } from "../../models/httpResponse";
 // import { toStringDate } from "../../utils/utilityFunctions";
 // import type { UserLogin } from "../models/AdminArea/user/user";
@@ -235,9 +236,9 @@ export const searchSchedulePagination = async (
   startStationId: number | null,
   endStationId: number | null,
   date: string | null
-): Promise<ApiResponse<Schedule[]>> => {
+): Promise<ApiResponse<Schedule[] | ScheduleBus[]>> => {
   try {
-    const res = await httpRequest.get("/api/schedules/search", {
+    const res = await httpRequest.get("/schedules/search", {
       params: {
         startStationId,
         endStationId,
