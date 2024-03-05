@@ -124,6 +124,8 @@ import type { Stations } from "../../models/AdminArea/station/stations/stations"
 import { getAllStation } from "../../services/AdminArea/stationService";
 import { initStation } from "../../utils/configs/initialStation";
 import { getAllScheduleBus } from "../../services/AdminArea/scheduleBusService";
+import CustomDropdown from "../../components/CustomDropdown";
+import CustomDatePicker from "../../components/CustomCalendar";
 
 const SchedulePage: FC = () => {
   const [date, setDate] = useState<string>("");
@@ -155,22 +157,54 @@ const SchedulePage: FC = () => {
     ScheduleBus[]
   >([]);
 
-  const [stationNames, setStationNames] = useState<string[]>([]);
-  const [stationIds, setStationIds] = useState<number[]>([]);
+  const [selectedStartStationOption, setSelectedStartStationOption] =
+    useState("");
+  const [selectedEndStationOption, setSelectedEndStationOption] = useState("");
+  const handleDropdownChange = (option: string, dropdownType: string) => {
+    if (dropdownType === "start") {
+      // Find the station ID based on the selected station name
+      const selectedStartStation = stationNames.find(
+        (station) => station === option
+      );
+      if (selectedStartStation) {
+        // Update startStationId with the found station name
+        setSelectedStartStationOption(selectedStartStation);
+        setStartStationId(startStationId);
+        console.log("Selected Start Station:", selectedStartStation);
+        console.log("startStationId:", startStationId);
+      }
+    } else if (dropdownType === "end") {
+      // Find the station ID based on the selected station name
+      const selectedEndStation = stationNames.find(
+        (station) => station === option
+      );
+      if (selectedEndStation) {
+        // Update endStationId with the found station name
+        setSelectedEndStationOption(selectedEndStation);
+        setEndStationId(endStationId);
+        console.log("Selected End Station:", selectedEndStation);
+        console.log("endStationId:", endStationId);
+      }
+    }
+  };
 
+  const [selectedDatePicker, setSelectedDatePicker] = useState<string>("");
   const handleDateChange = (date: Date | null) => {
     if (date) {
       const year = date.getFullYear().toString();
-      const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Month is 0-indexed
+      const month = (date.getMonth() + 1).toString().padStart(2, "0");
       const day = date.getDate().toString().padStart(2, "0");
       const formattedDate = `${year}-${month}-${day}`;
-      setSelectedDate(formattedDate);
+      setSelectedDatePicker(formattedDate);
       console.log("Selected Date:", formattedDate);
     } else {
-      setSelectedDate(null);
+      setSelectedDatePicker("");
       console.log("No date selected");
     }
   };
+
+  const [stationNames, setStationNames] = useState<string[]>([]);
+  const [stationIds, setStationIds] = useState<number[]>([]);
 
   // pagination
   const LIMIT = 10;
@@ -183,11 +217,39 @@ const SchedulePage: FC = () => {
   };
   // end of pagination
 
-  const Submit = async (e: FormEvent<HTMLFormElement>) => {
+  /*   const Submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // convert into filter
     if (startStationId !== null && endStationId !== null) {
       searchSchedule(startStationId, endStationId, date);
+    }
+    console.log("Start Station:", startStation);
+    console.log("End Station:", endStation);
+    console.log("Selected Date:", selectedDatePicker);
+  }; */
+
+  const Submit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    console.log("Start Station ID:", selectedStartStationOption);
+    console.log("End Station ID:", selectedEndStationOption);
+
+    if (selectedStartStationOption && selectedEndStationOption) {
+      console.log("Both start and end stations are selected.");
+
+      if (selectedDatePicker) {
+        console.log("Selected Date:", selectedDatePicker);
+        // Call searchSchedule with the correct parameters
+        searchSchedule(
+          startStationId !== null ? startStationId : undefined,
+          endStationId !== null ? endStationId : undefined,
+          selectedDatePicker
+        );
+      } else {
+        console.log("Please select a date.");
+      }
+    } else {
+      console.log("Please select both start and end stations.");
     }
   };
 
@@ -458,12 +520,42 @@ const SchedulePage: FC = () => {
         const res = await getAllScheduleBus();
 
         if (res.status === 200) {
-          // Assuming res.data is an array of ScheduleBus objects
           const scheduleBusData = Array.isArray(res.data)
             ? res.data
             : [res.data];
-
           console.log("scheduleBusData:", scheduleBusData);
+
+          if (scheduleBusData.length > 0) {
+            scheduleBusData.forEach((scheduleBus: ScheduleBus) => {
+              // Find departure stop
+              const departureStop = scheduleBus.schedule?.route?.stations?.find(
+                (station) => station.stopOrder === 0
+              )?.station?.stationName;
+
+              // Find arrival stop
+              const arrivalStop = scheduleBus.schedule?.route?.stations?.reduce(
+                (maxStop, currentStop) =>
+                  currentStop.stopOrder &&
+                  currentStop.stopOrder > (maxStop?.stopOrder ?? 0)
+                    ? currentStop
+                    : maxStop,
+                scheduleBus.schedule.route.stations[0] // Initial max stop order
+              )?.station?.stationName;
+
+              console.log(
+                `Departure Stop for Schedule Bus ${scheduleBus.id}:`,
+                departureStop
+              );
+              console.log(
+                `Arrival Stop for Schedule Bus ${scheduleBus.id}:`,
+                arrivalStop
+              );
+
+              // Update state with the found departure and arrival stops
+              setDepartureStop(departureStop ?? "");
+              setArrivalStop(arrivalStop ?? "");
+            });
+          }
         }
       } catch (error) {
         console.error(
@@ -490,117 +582,45 @@ const SchedulePage: FC = () => {
           <div className="mb-1 w-full">
             <div className="sm:flex">
               <div className="mb-3 items-center dark:divide-gray-700 sm:mb-0 sm:flex sm:divide-x sm:divide-gray-100">
-                <form className="lg:pr-3" onSubmit={(e) => Submit(e)}>
-                  <div className="relative mt-1 lg:w-64 xl:w-96">
-                    <div
-                      style={{
-                        border: "1px solid #ccc",
-                        borderRadius: "4px",
-                        padding: "8px",
-                      }}
-                    >
-                      <Dropdown
-                        label={
-                          startStation ? `${startStation}` : "Start Station"
+                <form className="flex justify-center lg:pr-3" onSubmit={Submit}>
+                  <div className="relative z-10 mt-1 flex items-center lg:w-64 xl:w-96">
+                    <div className="mr-2">
+                      <CustomDropdown
+                        label="Start Station"
+                        options={stationNames}
+                        value={selectedStartStationOption}
+                        onChange={(option) =>
+                          handleDropdownChange(option, "start")
                         }
-                        inline
-                        name="users-search"
-                        value={startStation}
-                      >
-                        {stations
-                          .filter(
-                            (station) =>
-                              station.stationName !== endStation &&
-                              station.stationName !== startStation
-                          )
-                          .map((station, index) => (
-                            <Dropdown.Item
-                              key={index}
-                              onClick={() => {
-                                console.log(
-                                  `Selected Start Station: ${station.stationName} with stationId: ${station.id}`
-                                );
-                                setStartStation(station.stationName ?? "");
-                                setStartStationId(station.id);
-                              }}
-                            >
-                              {station.stationName}
-                            </Dropdown.Item>
-                          ))}
-                      </Dropdown>
-                    </div>
-                    <div
-                      style={{
-                        border: "1px solid #ccc",
-                        borderRadius: "4px",
-                        padding: "8px",
-                      }}
-                    >
-                      <Dropdown
-                        label={endStation ? `${endStation}` : "End Station"}
-                        inline
-                        name="users-search"
-                        value={endStation}
-                      >
-                        {stations
-                          .filter(
-                            (station) =>
-                              station.stationName !== startStation &&
-                              station.stationName !== endStation
-                          )
-                          .map((station, index) => (
-                            <Dropdown.Item
-                              key={index}
-                              onClick={() => {
-                                console.log(
-                                  `Selected Start Station: ${station.stationName} with stationId: ${station.id}`
-                                );
-                                setEndStation(station.stationName ?? "");
-                                setEndStationId(station.id);
-                              }}
-                            >
-                              {station.stationName}
-                            </Dropdown.Item>
-                          ))}
-                      </Dropdown>
-                    </div>
-                    {/* <TextInput
-                      id="users-search"
-                      name="users-search"
-                      placeholder="Select date..."
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                    /> */}
-                    <div>
-                      <ReactDatePicker
-                        selected={selectedDate ? new Date(selectedDate) : null}
-                        onChange={(date) => {
-                          if (date instanceof Date && !isNaN(date.getTime())) {
-                            // Check if 'date' is a valid Date object
-                            const year = date.getFullYear();
-                            const month = String(date.getMonth() + 1).padStart(
-                              2,
-                              "0"
-                            );
-                            const day = String(date.getDate()).padStart(2, "0");
-                            const formattedDate = `${year}-${month}-${day}`;
-                            console.log("Formatted Date:", formattedDate);
-                            console.log("date:", date);
-                            setDate(formattedDate);
-                            handleDateChange(date);
-                          }
-                        }}
-                        placeholderText="Select date..."
-                        dateFormat="yyyy-MM-dd"
-                        title="Flowbite Datepicker"
                       />
                     </div>
-                    <button
-                      type="submit"
-                      className="absolute inset-y-0 right-0 flex items-center pr-2"
-                    >
-                      <HiSearch />
-                    </button>
+                    <div className="mr-2">
+                      <CustomDropdown
+                        label="End Station"
+                        options={stationNames}
+                        value={selectedEndStationOption}
+                        onChange={(option) =>
+                          handleDropdownChange(option, "end")
+                        }
+                      />
+                    </div>
+                    <div className="mr-2">
+                      <CustomDatePicker
+                        label="Select Date"
+                        selectedDate={selectedDatePicker}
+                        onChange={(date: string) =>
+                          handleDateChange(date ? new Date(date) : null)
+                        }
+                      />
+                    </div>
+                    <div className="relative mt-1 lg:w-64 xl:w-96">
+                      <button
+                        type="submit"
+                        className="absolute inset-y-0 right-0 flex items-center pr-2"
+                      >
+                        <HiSearch />
+                      </button>
+                    </div>
                   </div>
                 </form>
               </div>
@@ -785,14 +805,31 @@ const SchedulePage: FC = () => {
                                 {(value as ScheduleBus).schedule?.departureTime}
                               </Table.Cell>
                               <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
-                                {/* {value.code} */}
                                 {(value as ScheduleBus).schedule?.arrivalTime}
                               </Table.Cell>
                               <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
-                                {departureStop}
+                                {
+                                  (
+                                    value as ScheduleBus
+                                  ).schedule?.route?.stations?.find(
+                                    (station) => station.stopOrder === 0
+                                  )?.station?.stationName
+                                }
                               </Table.Cell>
                               <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
-                                {arrivalStop}
+                                {
+                                  (
+                                    value as ScheduleBus
+                                  ).schedule?.route?.stations?.reduce(
+                                    (maxStop, currentStop) =>
+                                      currentStop.stopOrder &&
+                                      currentStop.stopOrder >
+                                        (maxStop?.stopOrder ?? 0)
+                                        ? currentStop
+                                        : maxStop,
+                                    value.schedule?.route?.stations?.[0] // Initial max stop order
+                                  )?.station?.stationName
+                                }
                               </Table.Cell>
                               <Table.Cell>
                                 <div className="flex items-center gap-x-2 whitespace-nowrap">
