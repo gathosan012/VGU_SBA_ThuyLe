@@ -8,7 +8,7 @@ export const login = async (username: string, password: string) => {
     username,
     password,
   });
-  return res;
+  return { data: res, status: 200 };
 };
 
 

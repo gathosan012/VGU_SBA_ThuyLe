@@ -1,5 +1,5 @@
 import { Navbar } from "flowbite-react";
-import { FC } from "react";
+import type { FC } from "react";
 
 import logo from "../../assets/images/VGU-Logo.svg";
 import { logout } from "../../services/authService";
@@ -31,8 +31,8 @@ const DashboardNavbar: FC = () => {
             {/* Logout button */}
             <button
               type="button"
-              className="py-2 px-4 bg-primary-600 hover:opacity-70 text-center
-                      text-white rounded-full"
+              className="rounded-full bg-primary-600 px-4 py-2 text-center
+                      text-white hover:opacity-70"
               onClick={handleLogout}
             >
               Logout

@@ -1,31 +1,67 @@
-import type { FC } from "react"
+import { useState, type FC } from "react"
 import AdminLayout from "../../../layouts/AdminArea/AdminLayout"
+import MyModal from "./mymodal"
 
 const PaymentPage: FC = () => {
+
+    const [modal, setModal] = useState(false)
+
+    const handleOnclose = () => setModal(false)
+
     return(
         <AdminLayout isFooter={false}>
             <div className="px-4 pt-2">
-                <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-5 gap-y-8 overflow-hidden rounded border-t border-gray-200 pb-4 pt-10 shadow-lg sm:mt-12 sm:pt-12 lg:mx-0 lg:max-w-none lg:grid-cols-2">
-                    <div className="px-6 py-4">
-                        Qr code here
-                    </div>
+                <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-5 gap-y-8 overflow-hidden rounded border-t border-gray-200 pb-4 pt-10 shadow-lg sm:mt-12 sm:pt-12 lg:mx-0 lg:max-w-none ">
+                    <div className="grid px-6 py-4">
+                        <div className="grid py-2 text-center">
+                            <span className="font-semibold">Please make payment by bank transfer to account number below</span>
+                            <span className="font-semibold">Carefully check the content of the transfer according to the instructions</span>
+                        </div>
 
-                    <div className="px-6 py-4">
-                        Bank Account Information
+                        <div className="grid gap-x-6">
+                            <div className="flex py-2">
+                                <span className="min-w-60 items-center py-2">Account Holder</span>
+                                <span className="inline-flex items-center rounded border bg-gradient-to-b px-4 py-2 font-semibold ">Truong Dai hoc Viet Duc</span>
+                            </div>
+
+                            <div className="flex py-2">
+                                <span className="min-w-60 items-center py-2">Acoount Number</span>
+                                <span className="inline-flex items-center rounded border bg-gradient-to-b px-4 py-2 font-semibold ">1002220990</span>
+                            </div>
+
+                            <div className="flex py-2">
+                                <span className="min-w-60 items-center py-2">Name of Bank</span>
+                                <span className="inline-flex items-center rounded border bg-gradient-to-b px-4 py-2 font-semibold ">JSC Bank of Foreign Trade of Vietnam (Vietcombank)/Branch: Binh Duong</span>
+                            </div>
+
+                            <div className="flex py-2">
+                                <span className="min-w-60 items-center py-2">Transfer Note</span>
+                                <span className="inline-flex items-center rounded border bg-gradient-to-b px-4 py-2 font-semibold ">"Ticket type" - "DD/MM/YYYY" - "Student ID" - "Your Full Name"</span>
+                            </div>
+                        </div>
                     </div>
+                    <span className="flex items-center px-20">
+                        <span className="h-px flex-1 bg-black"></span>
+                        <span className="shrink-0 px-6">OR</span>
+                        <span className="h-px flex-1 bg-black"></span>
+                    </span>
+
+                    <div className="grid  px-6 py-4">
+                        <span className="min-w-max text-center ">Scan this QR code</span>
+                    </div>                    
+
+                    <button className="bg-blue-500 mr-4 rounded-lg px-6 py-3 font-sans text-xs font-bold uppercase text-white shadow-md transition-all hover:shadow-lg focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                        data-ripple-light="true"
+                        onClick={() => setModal(true)}
+                        >
+                        Proceed to payment
+                    </button>
 
                     
+
+                    <MyModal onclose={handleOnclose} visible={modal}/>
                 </div>
-                <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-5 gap-y-8 overflow-hidden rounded border-t border-gray-200 pb-4 pt-10 shadow-lg sm:mt-6 sm:pt-6 lg:mx-0 lg:max-w-none lg:grid-cols-1 lg:pt-2">
-                    <div className="grid justify-center text-center">
-                        <span className="">Click button below after success transfer fees</span>
-                        <button className="inline-block max-w-60 rounded px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                            data-te-ripple-init
-                            data-te-ripple-color="light">
-                            Proceed to payment
-                        </button>
-                    </div>
-                </div>
+                
             </div>
         </AdminLayout>
     )
