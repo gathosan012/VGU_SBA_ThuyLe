@@ -58,7 +58,7 @@ const TicketDetailsPage: FC = () => {
 
 
     return(
-        <AdminLayout isFooter={false}>
+        <AdminLayout isFooter={true}>
             <div className="px-4 pt-2">
                 <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-5 gap-y-8 overflow-hidden rounded border-t border-gray-200 pb-4 pt-10 shadow-lg sm:mt-12 sm:pt-12 lg:mx-0 lg:max-w-none lg:grid-cols-2">
                     <div>

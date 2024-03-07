@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import ReactDatePicker from "react-datepicker";
 import { Loading } from "notiflix";
 import images from "../../../assets/images/1.jpg";
+import CustomButton from "../../../components/CustomButton";
 
 
 const HomePage: FC =  () => {
@@ -100,53 +101,52 @@ const HomePage: FC =  () => {
     return (
     <AdminLayout isFooter={true}>
       <div className="px-4 pt-2">
-        <div className=" rounded border-t border-gray-200 shadow-lg">
-            <form onSubmit={(e) => Submit(e)} className="mx-auto grid max-w-2xl grid-cols-1 gap-x-5 gap-y-8 overflow-hidden rounded border-t border-gray-200 pt-10 sm:mt-12 sm:pt-12 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-                <div className="px-6 py-4">
-                    <Label htmlFor="start">Search your start</Label>
-                    <select id="start" name="start" className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400"
-                        value={start}
-                        onChange={(s) => {handleChange(s.target.value); setStartID(+s.target.value);}}>
-                        <option selected>Choose your start </option>
-                        {
-                            stations.map((st,id) => {
-                                return(
-                                    <option key={id} value={st.id} >{st.stationName}+{st.id}</option>
-                                )
-                            })
-                        }
-                    </select>
-                </div>
+        <div className="rounded border-t border-gray-200 shadow-lg">
+            <form onSubmit={(e) => Submit(e)}>
+                <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-5 gap-y-8 overflow-hidden rounded border-t border-gray-200 pt-10 sm:mt-12 sm:pt-12 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+                    <div className="px-6 py-4">
+                        <Label htmlFor="start">Search your start</Label>
+                        <select id="start" name="start" className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400"
+                            value={start}
+                            onChange={(s) => {handleChange(s.target.value); setStartID(+s.target.value);}}>
+                            <option selected>Choose your start </option>
+                            {
+                                stations.map((st,id) => {
+                                    return(
+                                        <option key={id} value={st.id} >{st.stationName}+{st.id}</option>
+                                    )
+                                })
+                            }
+                        </select>
+                    </div>
 
-                <div className="px-6 py-4">
-                    <Label htmlFor="start">Search your destination</Label>
-                    <select id="destination" name="end" className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400"
-                        value={end}
-                        onChange={e => {handleChanges(e.target.value); setEndID(+e.target.value); console.log(e.target.value) }}>
-                        <option selected>Choose your destination </option>
-                        {
-                            stations.map((dx, id) => {
-                                return(
-                                    <option key={id} value={dx.id} >{dx.stationName}+{dx.id}</option>
-                                )
-                            })
-                        }
-                    </select>
-                </div>
+                    <div className="px-6 py-4">
+                        <Label htmlFor="start">Search your destination</Label>
+                        <select id="destination" name="end" className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400"
+                            value={end}
+                            onChange={e => {handleChanges(e.target.value); setEndID(+e.target.value); console.log(e.target.value) }}>
+                            <option selected>Choose your destination </option>
+                            {
+                                stations.map((dx, id) => {
+                                    return(
+                                        <option key={id} value={dx.id} >{dx.stationName}+{dx.id}</option>
+                                    )
+                                })
+                            }
+                        </select>
+                    </div>
 
-                <div className="px-6 py-4">
-                    <label htmlFor="date"> Search your date</label>
-                    <div>
-                        <ReactDatePicker selected={selectDate ? new Date(selectDate) : null} onChange={(date) => handleDateChange(date) } dateFormat="yyyy-MM-dd" title="Flowbite Datepicker" className=" rounded-md" /> 
-                    
+                    <div className="px-6 py-4">
+                        <Label htmlFor="date"> Search your date</Label>
+                        <div>
+                            <ReactDatePicker selected={selectDate ? new Date(selectDate) : null} onChange={(date) => handleDateChange(date) } dateFormat="yyyy-MM-dd" title="Flowbite Datepicker" className=" rounded-md" /> 
+                        
+                        </div>
                     </div>
                 </div>
+                
                 <div className="flex justify-center p-2">
-                <button type="submit"
-                    className="bg-blue-500 mr-4 w-full max-w-20 rounded-lg px-6 py-3 text-center font-sans text-xs font-bold uppercase text-white shadow-md transition-all hover:shadow-lg focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                    data-ripple-light="true">
-                    Search
-                </button>
+                <CustomButton content="Search" type="filled" onClick={(e) => Submit(e)} shape={""} />
             </div>
             </form>
 
@@ -154,7 +154,7 @@ const HomePage: FC =  () => {
                         
         </div>
 
-        <div className="grid grid-cols-1 gap-x-5 gap-y-8 overflow-hidden rounded border-t pt-4 shadow-lg sm:mt-4 sm:grid-cols-2 sm:pt-4  lg:mx-0 lg:max-w-none lg:grid-cols-4">
+        {/* <div className="grid grid-cols-1 gap-x-5 gap-y-8 overflow-hidden rounded border-t pt-4 shadow-lg sm:mt-4 sm:grid-cols-2 sm:pt-4  lg:mx-0 lg:max-w-none lg:grid-cols-4">
             <div className="mx-4 mb-4 min-h-24 rounded-lg bg-white py-3 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]">
                 <a href="#!">
                     <img className="max-h-16 rounded-t-lg object-fill" src="https://tecdn.b-cdn.net/img/new/standard/nature/184.jpg" alt="" />
@@ -195,7 +195,7 @@ const HomePage: FC =  () => {
             </div>
 
             
-        </div>
+        </div> */}
 
         <div className="mx-auto grid max-w-2xl grid-cols-1 divide-y-4 divide-red-500 overflow-hidden rounded border-t border-gray-200 pt-10 shadow-lg sm:mt-12 sm:pt-12 lg:mx-0 lg:max-w-none">
             <div className="p-2">

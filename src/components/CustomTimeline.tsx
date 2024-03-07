@@ -1,7 +1,7 @@
 import type { FC } from "react";
 
 interface TimelineData {
-    time: string;
+    time: String;
     station: string;
 }
 

@@ -6,7 +6,7 @@ import CustomButton from "../../../components/CustomButton"
 
 const HistoryPage: FC = () => {
     return(
-        <AdminLayout isFooter={false}>
+        <AdminLayout isFooter={true}>
             <div className="px-4 py-2">
                 <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-5 gap-y-8 overflow-hidden rounded border-t border-gray-200 pb-4 pt-6 shadow-lg sm:mt-12 sm:pt-12 lg:mx-0 lg:max-w-none ">
                         <ButtonGroup>
@@ -26,8 +26,8 @@ const HistoryPage: FC = () => {
                         </ButtonGroup>
                         
 
-                        <div className="px-2">
-                            <div className="flex justify-between divide-x-2 rounded-lg bg-white p-4 py-3 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]">
+                        <div className="mx-24 my-10">
+                            <div className="flex justify-between divide-x-2 rounded-lg bg-white px-4 py-3 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]">
                                 <div className="">
                                     <span>Monday 1.1.2024</span>
                                     <div>

@@ -1,4 +1,4 @@
-import type { FC } from "react";
+import type { FC, FormEvent } from "react";
 
 interface ButtonProps {
     disabled?: boolean;
@@ -6,7 +6,7 @@ interface ButtonProps {
     type?: "outlined" | "filled";
     content: string;
     onNavbar?: boolean;
-    onClick?: () => void;
+    onClick?: (e: FormEvent<HTMLFormElement>) => void;
     buttonWidth?: string;
 }
 
