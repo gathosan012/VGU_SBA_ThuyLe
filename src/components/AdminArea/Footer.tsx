@@ -1,5 +1,5 @@
 import { Footer } from "flowbite-react";
-import { FC } from "react";
+import type { FC } from "react";
 
 export const MainContentFooter: FC = function () {
   return (

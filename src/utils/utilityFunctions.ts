@@ -3,14 +3,14 @@ export const objectIsNullOrEmpty = (object: any): boolean => {
 };
 
 export const toStringMonthYear = (input: Date): string => {
-  let value = new Date(input);
+  const value = new Date(input);
   const year = value.getFullYear();
   const month = toStringLeadingZeros(value.getMonth() + 1, 2);
   return `${month}/${year}`;
 };
 
 export const toStringDate = (input: Date): string => {
-  let value = new Date(input);
+  const value = new Date(input);
   const year = value.getFullYear();
   const month = toStringLeadingZeros(value.getMonth() + 1, 2);
   const date = toStringLeadingZeros(value.getDate(), 2);
@@ -18,7 +18,7 @@ export const toStringDate = (input: Date): string => {
 };
 
 export const toStringTime = (input: Date): string => {
-  let value = new Date(input);
+  const value = new Date(input);
   const hours = toStringLeadingZeros(value.getHours(), 2);
   const minutes = toStringLeadingZeros(value.getMinutes(), 2);
   const seconds = toStringLeadingZeros(value.getSeconds(), 2);

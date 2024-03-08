@@ -9,12 +9,12 @@ function Footer() {
   };
 
   useEffect(() => {
-    let year = new Date().getFullYear();
+    const year = new Date().getFullYear();
     setYear(year);
   });
 
   return (
-    <div className="text-center text-slate-500 py-5 opacity-70">
+    <div className="text-slate-500 py-5 text-center opacity-70">
       <p className="dark:text-white">
         Looking for some help? Click the email icon below!
       </p>
@@ -23,7 +23,7 @@ function Footer() {
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 512 512"
-            className="w-6 h-6 text-blue hover:rotate-45"
+            className="size-6 text-blue hover:rotate-45"
             strokeWidth="1.5"
             stroke="currentColor"
             fill="currentColor"

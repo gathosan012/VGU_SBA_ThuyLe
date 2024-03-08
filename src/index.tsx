@@ -1,4 +1,3 @@
-import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import theme from "./flowbite-theme";
 import { Flowbite } from "flowbite-react";
@@ -16,6 +15,8 @@ import PaymentPage from "./pages/AdminArea/Payment/Payment";
 import SchedulePage from "./pages/AdminArea/Schedule/Schedule";
 import HistoryPage from "./pages/AdminArea/History/History";
 import TicketDetailsPage from "./pages/AdminArea/TicketDetails/TicketDetails";
+import MANAGE_SchedulePage from "./pages/AdminArea/Schedule";
+import DashboardPage from "./pages/AdminArea/Dashboard";
 
 const container = document.getElementById("root");
 
@@ -26,27 +27,28 @@ if (!container) {
 const root = createRoot(container);
 
 root.render(
-  <StrictMode>
-    <Flowbite theme={{ theme }}>
-      <BrowserRouter>
-        <Routes>
-          <Route path={APPLICATION_URL.MAINPAGE_URL} element={<MainPage />} />
-          <Route path={APPLICATION_URL.LOGIN_URL} element={<LogInPage />} />
-          <Route
-            element={<PrivateRoutes redirectPath={APPLICATION_URL.LOGIN_URL} />}
-          >
-            <Route path={APPLICATION_URL.RECORD_URL} element={<RecordPage />} />
+  // <StrictMode>
+  <Flowbite theme={{ theme }}>
+    <BrowserRouter>
+      <Routes>
+        <Route path={APPLICATION_URL.MAINPAGE_URL} element={<MainPage />} />
+        <Route path={APPLICATION_URL.LOGIN_URL} element={<LogInPage />} />
+        <Route
+          element={<PrivateRoutes redirectPath={APPLICATION_URL.LOGIN_URL} />}
+        >
+          <Route path={APPLICATION_URL.RECORD_URL} element={<RecordPage />} />
 
-            <Route path={APPLICATION_URL.HOME_URL} element={<HomePage />} />
-            <Route path={APPLICATION_URL.PAYMENT_URL} element={<PaymentPage />} />
-            <Route path={APPLICATION_URL.SCHEDULE_URL} element={<SchedulePage/>} />
-            <Route path={APPLICATION_URL.HISTORY_URL} element={<HistoryPage />} />
-            <Route path={APPLICATION_URL.TICKETDETAILS_URL} element={<TicketDetailsPage />} />
+          <Route path={APPLICATION_URL.HOME_URL} element={<HomePage />} />
+          <Route path={APPLICATION_URL.PAYMENT_URL} element={<PaymentPage />} />
+          <Route path={APPLICATION_URL.SCHEDULE_URL} element={<SchedulePage />} />
+          <Route path={APPLICATION_URL.HISTORY_URL} element={<HistoryPage />} />
+          <Route path={APPLICATION_URL.TICKETDETAILS_URL} element={<TicketDetailsPage />} />
+          <Route path={APPLICATION_URL.MANAGE_SCHEDULE_URL} element={<MANAGE_SchedulePage />} />
 
-            {/* Add more router here */}
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </Flowbite>
-  </StrictMode>
-);
+          {/* Add more router here */}
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  </Flowbite>
+
+)

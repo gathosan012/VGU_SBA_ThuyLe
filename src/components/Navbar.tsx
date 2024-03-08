@@ -1,14 +1,15 @@
-import {  useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import logo from "../assets/images/VGU-Logo.svg";
 
 function Navbar() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  
+
+
   return (
     <nav className="flex items-center justify-between py-5">
-      <img src={logo} className="w-[180px]" alt="the_logo_image" />
+      <img src={logo} className="w-[180px]" alt="imag" />
 
       <div className="flex items-center justify-between">
         {/* Login button */}

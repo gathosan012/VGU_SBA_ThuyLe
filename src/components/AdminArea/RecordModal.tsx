@@ -1,11 +1,12 @@
-import { FC, useState, useEffect, Dispatch, SetStateAction } from "react";
+import type { FC, Dispatch, SetStateAction } from "react";
+import { useState, useEffect } from "react";
 import { Button, Label, Modal, TextInput, Textarea } from "flowbite-react";
 import { Loading, Notify } from "notiflix";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { Record } from "../../models/record";
+import type { Record } from "../../models/record";
 import { createRecord, updateRecord } from "../../services/recordService";
-import { HttpResponse } from "../../models/httpResponse";
+import type { HttpResponse } from "../../models/httpResponse";
 import CustomFileInput from "./CustomFileInput";
 import { initRecord } from "../../utils/configs/initialRecord";
 import { NOTIFY } from "../../utils/configs/notify";

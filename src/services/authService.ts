@@ -14,7 +14,7 @@ export const login = async (username: string, password: string) => {
 
 export const logout = () => {
   sessionStorage.removeItem(STORAGE.PIT_TOKEN);
-  sessionStorage.removeItem(STORAGE.PIT_ROLE); 
+  sessionStorage.removeItem(STORAGE.PIT_ROLE);
 
   Cookies.remove(STORAGE.PIT_TOKEN);
   Cookies.remove(STORAGE.PIT_ROLE);

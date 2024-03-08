@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 import { navigationData } from "../../utils/configs/routes/navigationData";
 
-type Props = {
+interface Props {
   isMobile: boolean;
 };
 

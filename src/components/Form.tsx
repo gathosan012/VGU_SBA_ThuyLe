@@ -1,10 +1,11 @@
 import { Table, Tooltip } from "flowbite-react";
 import { Loading } from "notiflix/build/notiflix-loading-aio";
 import { Notify } from "notiflix/build/notiflix-notify-aio";
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import type { FormEvent } from "react";
 
 import type { HttpResponse } from "../models/httpResponse";
-import { Record } from "../models/record";
+import type { Record } from "../models/record";
 import { download, getRecordByCode } from "../services/recordService";
 import { toStringDate, toStringTime } from "../utils/utilityFunctions";
 
@@ -74,9 +75,8 @@ function Form() {
                 setText(e.target.value.toUpperCase());
                 setIsError(false);
               }}
-              className={`${
-                isError ? "border-red-600" : "border-gray-500"
-              } mb-7 w-full select-all rounded-full bg-transparent px-6 py-3 placeholder:text-gray-500 dark:text-white`}
+              className={`${isError ? "border-red-600" : "border-gray-500"
+                } mb-7 w-full select-all rounded-full bg-transparent px-6 py-3 placeholder:text-gray-500 dark:text-white`}
               placeholder="Your Tax File Code..."
             />
           </div>
@@ -117,10 +117,10 @@ function Form() {
                 </Table.Cell>
                 <Table.Cell>
                   <div className="text-base font-semibold text-gray-900 dark:text-white">
-                    {toStringDate(fileResult.createdDate as Date)}
+                    {toStringDate(fileResult.createdDate!)}
                   </div>
                   <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                    {toStringTime(fileResult.createdDate as Date)}
+                    {toStringTime(fileResult.createdDate!)}
                   </div>
                 </Table.Cell>
                 <Table.Cell>

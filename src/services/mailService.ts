@@ -1,7 +1,7 @@
 import * as httpRequest from "../utils/httpRequest";
 import authHeader from "../utils/authHeader";
-import { HttpResponse } from "../models/httpResponse";
-import { Record } from "../models/record";
+import type { HttpResponse } from "../models/httpResponse";
+import type { Record } from "../models/record";
 
 export const resendEmail = async (record: Record) => {
   const res: HttpResponse = await httpRequest.post(`mails`, record, {
