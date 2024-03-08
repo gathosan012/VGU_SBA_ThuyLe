@@ -8,7 +8,7 @@ import MainPage from "./pages/Main";
 import "./index.css";
 import LogInPage from "./pages/Login";
 import RecordPage from "./pages/AdminArea/Record";
-import { PrivateRoutes } from "./components/Routes/PrivateRoute";
+import { PrivateRoutes } from "./Routes/PrivateRoute";
 import { APPLICATION_URL } from "./utils/configs/routes/applicationUrl";
 import HomePage from "./pages/AdminArea/Home/Home";
 import PaymentPage from "./pages/AdminArea/Payment/Payment";

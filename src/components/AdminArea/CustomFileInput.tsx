@@ -38,7 +38,6 @@ const CustomFileInput: FC<Props> = ({ file, setFile, fileName }) => {
   return (
     <div>
       <div
-        // 4. add onClick handler
         onClick={handleClick}
         className="p-4 flex flex-col items-center gap-2 bg-violet-50 text-violet-500 rounded-lg hover:bg-violet-100 cursor-pointer"
       >

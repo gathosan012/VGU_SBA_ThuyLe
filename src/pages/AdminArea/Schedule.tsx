@@ -89,7 +89,7 @@ import {
 
 import { HiPaperAirplane } from "react-icons/hi2";
 
-import AdminLayout from "../../layouts/AdminArea/AdminLayout";
+import AdminLayout from "../../layouts/Layout";
 import { ScheduleModal } from "../../components/AdminArea/ScheduleModal";
 import { ScheduleBusModal } from "../../components/AdminArea/ScheduleBusModal";
 // import { type Record } from "../../models/record";
@@ -484,7 +484,7 @@ const MANAGE_SchedulePage: FC = () => {
   }
 
   return (
-    <AdminLayout isFooter={false}>
+    <AdminLayout isFooter={true}>
       <div className="px-4 pt-6">
         <div className="block items-center justify-between border-b border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 sm:flex">
           <div className="mb-1 w-full">

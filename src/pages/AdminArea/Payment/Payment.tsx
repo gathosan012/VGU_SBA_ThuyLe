@@ -1,5 +1,5 @@
 import { useState, type FC } from "react"
-import AdminLayout from "../../../layouts/AdminArea/AdminLayout"
+import AdminLayout from "../../../layouts/Layout"
 import MyModal from "./mymodal"
 
 const PaymentPage: FC = () => {
@@ -8,7 +8,7 @@ const PaymentPage: FC = () => {
 
     const handleOnclose = () => setModal(false)
 
-    return(
+    return (
         <AdminLayout isFooter={false}>
             <div className="px-4 pt-2">
                 <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-5 gap-y-8 overflow-hidden rounded border-t border-gray-200 pb-4 pt-10 shadow-lg sm:mt-12 sm:pt-12 lg:mx-0 lg:max-w-none ">
@@ -48,20 +48,20 @@ const PaymentPage: FC = () => {
 
                     <div className="grid  px-6 py-4">
                         <span className="min-w-max text-center ">Scan this QR code</span>
-                    </div>                    
+                    </div>
 
                     <button className="bg-blue-500 mr-4 rounded-lg px-6 py-3 font-sans text-xs font-bold uppercase text-white shadow-md transition-all hover:shadow-lg focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                         data-ripple-light="true"
                         onClick={() => setModal(true)}
-                        >
+                    >
                         Proceed to payment
                     </button>
 
-                    
 
-                    <MyModal onclose={handleOnclose} visible={modal}/>
+
+                    <MyModal onclose={handleOnclose} visible={modal} />
                 </div>
-                
+
             </div>
         </AdminLayout>
     )
