@@ -10,13 +10,13 @@ import LogInPage from "./pages/Login";
 import RecordPage from "./pages/AdminArea/Record";
 import { PrivateRoutes } from "./Routes/PrivateRoute";
 import { APPLICATION_URL } from "./utils/configs/routes/applicationUrl";
-import HomePage from "./pages/AdminArea/Home/Home";
-import PaymentPage from "./pages/AdminArea/Payment/Payment";
-import SchedulePage from "./pages/AdminArea/Schedule/Schedule";
-import HistoryPage from "./pages/AdminArea/History/History";
-import TicketDetailsPage from "./pages/AdminArea/TicketDetails/TicketDetails";
+import HomePage from "./pages/UserArea/Home/Home";
+import PaymentPage from "./pages/UserArea/Payment/Payment";
+import SchedulePage from "./pages/UserArea/Schedule/Schedule";
+import HistoryPage from "./pages/UserArea/History/History";
+import TicketDetailsPage from "./pages/UserArea/TicketDetails/TicketDetails";
 import MANAGE_SchedulePage from "./pages/AdminArea/Schedule";
-import DashboardPage from "./pages/AdminArea/Dashboard";
+// import DashboardPage from "./pages/AdminArea/Dashboard";
 
 const container = document.getElementById("root");
 

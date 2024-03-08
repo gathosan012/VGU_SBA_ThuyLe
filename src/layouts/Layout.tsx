@@ -30,7 +30,7 @@ const Layout: FC<PropsWithChildren<LayoutProps>> = function ({
     <div className="bg-white dark:bg-gray-800">
       <Navbar />
       <div className="flex items-start pt-16">
-        <Sidebar isMobile={isMobile} />
+        <Sidebar user="admin" isMobile={isMobile} />
         <MainContent isFooter={isFooter} isMobile={isMobile}>
           {children}
         </MainContent>
