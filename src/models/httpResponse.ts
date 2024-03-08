@@ -1,5 +1,8 @@
 export interface HttpResponse {
-    resCode: number;
-    payload: any;
-    resMsg: any;
+  status: any;
+}
+
+export interface LoginResponse {
+  token: string | null;
+  role: string | null;
 }

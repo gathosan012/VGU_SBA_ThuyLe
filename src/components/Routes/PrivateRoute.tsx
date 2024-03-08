@@ -5,11 +5,13 @@ import { APPLICATION_URL } from "../../utils/configs/routes/applicationUrl";
 import { isLogin } from "../../services/authService";
 
 type Props = {
-    redirectPath?: string;
+  redirectPath?: string;
 };
 
-export const PrivateRoutes: FC<Props> = ({ redirectPath = APPLICATION_URL.LOGIN_URL }) => {
-    const isAuthenticated = isLogin();
+export const PrivateRoutes: FC<Props> = ({
+  redirectPath = APPLICATION_URL.LOGIN_URL,
+}) => {
+  const isAuthenticated = isLogin();
 
-    return isAuthenticated ? <Outlet /> : <Navigate to={redirectPath} />;
+  return isAuthenticated ? <Outlet /> : <Navigate to={redirectPath} />;
 };

@@ -3,11 +3,11 @@ import Form from "./Form";
 
 function MainContent() {
   return (
-    <main className="text-center py-5 md:py-14">
-      <h1 className="text-xl md:text-4xl dark:text-white">
+    <main className="py-5 text-center md:py-14">
+      <h1 className="text-xl dark:text-white md:text-4xl">
         Personal Income Tax <span className="font-extrabold">by VGU!</span>
       </h1>
-      <p className="text-sm md:text-lg py-5 text-gray-500 dark:text-white">
+      <p className="py-5 text-sm text-gray-500 dark:text-white md:text-lg">
         Find your document.
       </p>
 
@@ -16,7 +16,7 @@ function MainContent() {
       <img
         src={image}
         alt="the dashboard image"
-        className="w-[90%] md:w-[80%] mx-auto mt-12"
+        className="mx-auto mt-12 w-[90%] md:w-[80%]"
       />
     </main>
   );

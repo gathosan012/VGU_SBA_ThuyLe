@@ -1,5 +1,4 @@
-/* eslint-disable prettier/prettier */
-import { FC } from "react";
+import type { FC } from "react";
 
 interface ButtonProps {
     disabled?: boolean;

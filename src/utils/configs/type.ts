@@ -1,5 +1,5 @@
 export const TYPE = {
-    ADD: "Add",
-    EDIT: "Edit",
-    VIEW: "View",
-}
+  ADD: "Add",
+  EDIT: "Edit",
+  VIEW: "View",
+};
