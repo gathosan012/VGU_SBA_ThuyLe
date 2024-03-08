@@ -1,3 +1,4 @@
+import type { Schedule } from "../models/UserArea/schedule";
 import type { Ticket } from "../models/UserArea/tickets";
 import authHeader from "../utils/authHeader";
 import httpRequest from "../utils/httpRequest";
@@ -24,7 +25,7 @@ export const postTickets = async () => {
 export const searchTicketPagination = async (
   startStationId: number | null,
   endStationId: number | null,
-  date: string | null ) : Promise<ApiResponse<Ticket[]>> => {
+  date: string | null ) : Promise<Schedule[]> => {
     try {
       const res = await httpRequest.get("/schedules/search", { 
         params : {

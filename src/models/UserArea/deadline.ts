@@ -1,4 +1,4 @@
 export interface Deadline {
     id: number;
-    time: string;
+    time: String;
 }

@@ -2,6 +2,6 @@ import type { Deadline } from "./deadline";
 
 export interface ticketType {
     id: number;
-    name: string;
+    name: String;
     deadline: Deadline | null;
 }

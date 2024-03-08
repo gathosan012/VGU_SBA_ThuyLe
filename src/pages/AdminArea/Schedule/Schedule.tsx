@@ -2,16 +2,15 @@ import type { FormEvent } from "react";
 import { useState, type FC, useEffect } from "react"
 import AdminLayout from "../../../layouts/AdminArea/AdminLayout"
 import { Label } from "flowbite-react"
-import type { Ticket } from "../../../models/UserArea/tickets"
-import { getTickets, searchTicketPagination } from "../../../services/ticketsService"
+import { searchTicketPagination } from "../../../services/ticketsService"
 import { Link } from "react-router-dom"
 import type { Station } from "../../../models/UserArea/station";
 import { getStation } from "../../../services/stationService";
 import ReactDatePicker from "react-datepicker";
 import CustomButton from "../../../components/CustomButton";
 import CustomTimeline from "../../../components/CustomTimeline";
-import { time } from "console";
 import CustomTag from "../../../components/CustomTag";
+import type { Schedule } from "../../../models/UserArea/schedule";
 
 
 const SchedulePage: FC = () => {
@@ -23,9 +22,8 @@ const SchedulePage: FC = () => {
     const [endID, setEndID] = useState<number>(1)
 
     const [stations, setStations] = useState<Station[]>([])
-    const [searchResult, setSearchResult] = useState<Ticket[]>([])
+    const [searchResult, setSearchResult] = useState<Schedule[]>([])
     const [selectDate, setSelectDate] = useState<string>()
-    const [ticket, setTicket] = useState<Ticket[]>([])
 
 
     const handleChange = (s: string) => {
@@ -64,29 +62,19 @@ const SchedulePage: FC = () => {
         handleStation();
     }, [])
 
-    const handleTicket = async () => {
-        try {
-            const response = await getTickets();
-            setTicket(response.data)
-        } catch (t) {
-            console.error(t)
-        }
-    }
-
-    useEffect(() => {
-        handleTicket();
-    }, [])
 
     const Submit = async (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-        SearchResult(startID,endID, selectDate )
+        e.preventDefault();
+        await SearchResult(startID,endID, selectDate );
     }
 
     const SearchResult = async (startID?:number, endID?:number, searchString?: string) => {
         try {
             // Loading.hourglass()
-            const res = await searchTicketPagination(startID ?? null , endID ?? null, searchString ?? null)
-                setSearchResult(res.data);
+            const res = await searchTicketPagination(startID ?? null , endID ?? null, searchString ?? null);
+            console.log(res);
+            
+            setSearchResult(res);
             }
          catch (e) {
             console.error(e)
@@ -152,11 +140,11 @@ const SchedulePage: FC = () => {
 
                     <div className="justify-center rounded border-t border-gray-200 px-2 py-4 ">
                         {
-                            ticket.map((t,id) => {
+                            searchResult.map((t,id) => {
                                 return(
                                     <div key={id} className="mb-5 grid grid-cols-1 justify-between gap-x-10 divide-x-2 rounded-lg bg-white shadow-lg md:mb-5 lg:mx-24 lg:my-10 lg:grid-cols-2 lg:flex-row">
                                         <div className="ml-5 mr-auto flex gap-x-4 px-3 py-4">
-                                            <CustomTimeline data={[{time:t.schedule.departureTime, station:t.startStation.stationName},{time:t.schedule.arrivalTime, station:t.endStation.stationName}]}></CustomTimeline>
+                                            <CustomTimeline data={[{time:t.departureTime, station:t.createdBy},{time:t.arrivalTime, station:t.createdTime}]}></CustomTimeline>
 
                                         </div>
 
@@ -173,7 +161,6 @@ const SchedulePage: FC = () => {
                             }) 
                         }
                         
-
                         <div className="p-2 text-center ">
                             <span>No more result</span>
                         </div>

@@ -8,10 +8,10 @@ export interface Ticket {
     schedule: Schedule;
     startStation: Station;
     endStation: Station;
-    address: string;
+    address: String;
     ticketType: ticketType;
     ticketStatus: ticketStatus;
-    bookingDate: string | null;
+    bookingDate: String | null;
     totalPrice: number | null;
   }
   

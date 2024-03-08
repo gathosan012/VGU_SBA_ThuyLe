@@ -6,6 +6,11 @@ export interface Schedule {
     route: Route | null;
     departureTime: String;
     arrivalTime: String; 
-    date: string | null;
+    createdBy: String;
+    createdTime: String;
+    updateBy: String;
+    updateTime: String;
+    date: String | null;
+    price: number;
 }
   

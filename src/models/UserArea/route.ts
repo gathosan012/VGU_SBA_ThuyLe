@@ -1,7 +1,7 @@
-import { Stations } from "./stations";
+import type { Stations } from "./stations";
 
 export interface Route {
   id: number | null;
-  routeName: string | null;
+  routeName: String | null;
   stations: Stations | null;
 }
