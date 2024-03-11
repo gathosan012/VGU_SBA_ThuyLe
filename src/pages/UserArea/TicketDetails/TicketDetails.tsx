@@ -121,7 +121,6 @@ const TicketDetailsPage: FC = () => {
                     <div className="p-2">
                         <div className="rounded border-gray-200 p-2 shadow-lg">
                             <span>Time date</span>
-                            <CustomTimeline></CustomTimeline>
                         </div>
                     </div>
                 </div>

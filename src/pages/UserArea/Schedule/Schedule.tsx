@@ -139,7 +139,7 @@ const SchedulePage: FC = () => {
                     </form>
 
                     <div className="justify-center rounded border-t border-gray-200 px-2 py-4 ">
-                        {/* {
+                        {
                             searchResult.map((t,id) => {
                                 return(
                                     <div key={id} className="mb-5 grid grid-cols-1 justify-between gap-x-10 divide-x-2 rounded-lg bg-white shadow-lg md:mb-5 lg:mx-24 lg:my-10 lg:grid-cols-2 lg:flex-row">
@@ -160,7 +160,7 @@ const SchedulePage: FC = () => {
                                     </div>
                                 )
                             }) 
-                        } */}
+                        }
                             {
                                 searchResult.map((t) =>{
                                     return(
