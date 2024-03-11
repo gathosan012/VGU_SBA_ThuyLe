@@ -1,8 +1,9 @@
 import type { FileModel } from "./file";
-import type { Staff, UserLogin } from "./user";
+import type { Staff, UserLogin } from "./AdminArea/user/user";
 
 export interface Record {
   id: number;
+  role: string; // update
   code: string;
   description: string;
   uploadFile: File;

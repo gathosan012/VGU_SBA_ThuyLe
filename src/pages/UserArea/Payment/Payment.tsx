@@ -1,5 +1,5 @@
 import { useState, type FC } from "react"
-import AdminLayout from "../../../layouts/AdminArea/AdminLayout"
+import AdminLayout from "../../../layouts/Layout"
 import MyModal from "./mymodal"
 import CustomButton from "../../../components/CustomButton"
 
@@ -49,18 +49,19 @@ const PaymentPage: FC = () => {
 
                     <div className="grid  px-6 py-4">
                         <span className="min-w-max text-center ">Scan this QR code</span>
-                    </div>                    
+                    </div>
 
                     <CustomButton content="Proceed to payment"
                         onClick={() => setModal(true)}
-                        >
+                    >
                         Proceed to payment
                     </CustomButton>
 
 
-                    <MyModal onclose={handleOnclose} visible={modal}/>
+
+                    <MyModal onclose={handleOnclose} visible={modal} />
                 </div>
-                
+
             </div>
         </AdminLayout>
     )

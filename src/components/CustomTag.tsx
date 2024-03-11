@@ -1,8 +1,8 @@
 import type { FC } from "react";
 
 interface TagProps {
-    content: String;
-    color: String;
+    content: string;
+    color: string;
 }
 
 const CustomTag: FC<TagProps> = ({

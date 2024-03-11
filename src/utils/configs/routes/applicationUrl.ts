@@ -6,7 +6,12 @@ export const APPLICATION_URL = {
   PAYMENT_URL: "/payment",
   SCHEDULE_URL: "/Schedule",
   HISTORY_URL: "/history",
-  TICKETDETAILS_URL: `/ticket-details/:id`
+  TICKETDETAILS_URL: `/ticket-details/:id`,
+  DASHBOARD_URL: "/dashboard",
+  STATION_URL: "/stations",
+
+  MANAGE_SCHEDULE_URL: "/manage-schedule",
+
   // STAFF_URL: "/staff",
   // FILE_URL: "/file",
 };

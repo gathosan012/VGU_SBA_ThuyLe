@@ -1,6 +1,6 @@
 import type { FormEvent } from "react";
 import { useState, type FC, useEffect } from "react"
-import AdminLayout from "../../../layouts/AdminArea/AdminLayout"
+import AdminLayout from "../../../layouts/Layout"
 import { Label } from "flowbite-react"
 import { searchTicketPagination } from "../../../services/ticketsService"
 import { Link } from "react-router-dom"

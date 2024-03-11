@@ -1,5 +1,7 @@
 import { Notify } from "notiflix";
-import React, { Dispatch, FC, SetStateAction, useRef } from "react";
+// import React, { Dispatch, FC, SetStateAction, useRef } from "react";
+import React, { useRef } from "react";
+import type { Dispatch, FC, SetStateAction } from "react";
 import { HiOutlineCloudArrowUp } from "react-icons/hi2";
 import { NOTIFY } from "../../utils/configs/notify";
 
@@ -7,7 +9,7 @@ type Props = {
   file: File | undefined;
   setFile: Dispatch<SetStateAction<File | undefined>>;
   fileName: string;
-};
+}
 
 const CustomFileInput: FC<Props> = ({ file, setFile, fileName }) => {
   const FILE_TYPES = ".pdf";
@@ -36,20 +38,11 @@ const CustomFileInput: FC<Props> = ({ file, setFile, fileName }) => {
   return (
     <div>
       <div
-        // 4. add onClick handler
         onClick={handleClick}
         className="p-4 flex flex-col items-center gap-2 bg-violet-50 text-violet-500 rounded-lg hover:bg-violet-100 cursor-pointer"
       >
         <HiOutlineCloudArrowUp className="w-6 h-6" />
-        <span>
-          {!!file
-            ? file?.name
-            : fileName
-            ? fileName
-            : `File must be a ${FILE_TYPES} file and less than ${
-                FILE_SIZE / (1024 * 1000)
-              } MB`}
-        </span>
+        <span>{!!file ? file?.name : fileName ? fileName : `File must be a ${FILE_TYPES} file and less than ${(FILE_SIZE / (1024 * 1000))} MB`}</span>
         <input
           type="file"
           ref={ref}

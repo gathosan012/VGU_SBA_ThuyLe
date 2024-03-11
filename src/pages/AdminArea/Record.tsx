@@ -1,6 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import type { FormEvent} from "react";
-import { type FC, useState, useEffect } from "react";
+import { type FC, useState, type FormEvent, useEffect } from "react";
 import { Button, Pagination, Table, TextInput, Tooltip } from "flowbite-react";
 import {
   HiPencil,
@@ -10,9 +9,9 @@ import {
   HiReply,
 } from "react-icons/hi";
 
-import AdminLayout from "../../layouts/AdminArea/AdminLayout";
+import AdminLayout from "../../layouts/Layout";
 import { RecordModal } from "../../components/AdminArea/RecordModal";
-import type { Record } from "../../models/record";
+import { type Record } from "../../models/record";
 import { HttpResponse } from "../../models/httpResponse";
 import {
   publishRecord,
@@ -29,7 +28,7 @@ import { NOTIFY } from "../../utils/configs/notify";
 import { RES_CODE, STATUS_CODE } from "../../utils/configs/statusCode";
 import { TYPE } from "../../utils/configs/type";
 
-const DashboardPage: FC = function () {
+const RecordPage: FC = function () {
   const [search, setSearch] = useState<string>("");
 
   // modal
@@ -218,39 +217,38 @@ const DashboardPage: FC = function () {
                               {index + 1}
                             </Table.Cell>
                             <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
-                              {value?.seqNo.toString().padStart(7, "0")}
+                              {value.seqNo.toString().padStart(7, "0")}
                             </Table.Cell>
                             <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
                               {toStringDate(value.whMonthStart)} -{" "}
                               {toStringDate(value.whMonthEnd)}
                             </Table.Cell>
                             <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
-                              {value?.serialNo}
+                              {value.serialNo}
                             </Table.Cell>
                             <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
-                              {value?.formNo}
+                              {value.formNo}
                             </Table.Cell>
                             <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
-                              {value?.code}
+                              {value.code}
                             </Table.Cell>
                             <Table.Cell className="mr-12 flex items-center space-x-6 whitespace-nowrap  lg:mr-0">
                               <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
                                 <div className="text-base font-semibold text-gray-900 dark:text-white">
-                                  {value?.staff?.firstname}{" "}
-                                  {value?.staff?.lastname}
+                                  {value.staff.firstname} {value.staff.lastname}
                                 </div>
                                 <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                                  {value?.staff?.email}
+                                  {value.staff.email}
                                 </div>
                               </div>
                             </Table.Cell>
                             <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
                               <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
                                 <div className="text-base font-semibold text-gray-900 dark:text-white">
-                                  {toStringDate(value.createdDate as Date)}
+                                  {toStringDate(value.createdDate!)}
                                 </div>
                                 <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                                  {toStringTime(value.createdDate as Date)}
+                                  {toStringTime(value.createdDate!)}
                                 </div>
                               </div>
                             </Table.Cell>
@@ -293,7 +291,9 @@ const DashboardPage: FC = function () {
                                     }
                                     onClick={() => handlePublish(value.id)}
                                   >
-                                    <HiStatusOnline className="action-btn text-xl" />
+                                    <HiStatusOnline
+                                      className={`action-btn text-xl`}
+                                    />
                                   </button>
                                 </Tooltip>
                                 <Tooltip content="Withdraw">
@@ -348,4 +348,4 @@ const DashboardPage: FC = function () {
     </AdminLayout>
   );
 };
-export default DashboardPage;
+export default RecordPage;

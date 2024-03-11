@@ -1,14 +1,14 @@
 import { useEffect, type FC, type PropsWithChildren, useState } from "react";
-import Navbar from "../../components/AdminArea/DashboardNavbar";
-import Sidebar from "../../components/AdminArea/Sidebar";
-import { MainContentFooter } from "../../components/AdminArea/Footer";
+import Navbar from "../components/AdminArea/DashboardNavbar";
+import Sidebar from "../components/AdminArea/Sidebar";
+import Footer from "../components/Footer";
 
-interface AdminLayoutProps {
+interface LayoutProps {
   isFooter?: boolean;
   isMobile?: boolean;
 }
 
-const AdminLayout: FC<PropsWithChildren<AdminLayoutProps>> = function ({
+const Layout: FC<PropsWithChildren<LayoutProps>> = function ({
   children,
   isFooter = true,
 }) {
@@ -30,7 +30,7 @@ const AdminLayout: FC<PropsWithChildren<AdminLayoutProps>> = function ({
     <div className="bg-white dark:bg-gray-800">
       <Navbar />
       <div className="flex items-start pt-16">
-        <Sidebar isMobile={isMobile} />
+        <Sidebar user="admin" isMobile={isMobile} />
         <MainContent isFooter={isFooter} isMobile={isMobile}>
           {children}
         </MainContent>
@@ -39,25 +39,24 @@ const AdminLayout: FC<PropsWithChildren<AdminLayoutProps>> = function ({
   );
 };
 
-const MainContent: FC<PropsWithChildren<AdminLayoutProps>> = function ({
+const MainContent: FC<PropsWithChildren<LayoutProps>> = function ({
   children,
   isFooter,
   isMobile,
 }) {
   return (
     <main
-      className={`relative h-screen w-full overflow-y-auto bg-gray-100 dark:bg-gray-900 ${
-        isMobile ? "ml-12" : "ml-64"
-      }`}
+      className={`relative h-full w-full overflow-y-auto bg-gray-100 dark:bg-gray-900 ${isMobile ? "ml-12" : "ml-64"
+        }`}
     >
       {children}
       {isFooter && (
         <div className="mx-4 mt-4">
-          <MainContentFooter />
+          <Footer />
         </div>
       )}
     </main>
   );
 };
 
-export default AdminLayout;
+export default Layout;
