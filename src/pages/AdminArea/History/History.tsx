@@ -3,6 +3,9 @@ import AdminLayout from "../../../layouts/AdminArea/AdminLayout"
 import ButtonGroup from "flowbite-react/lib/esm/components/Button/ButtonGroup"
 import { Button } from "flowbite-react"
 import CustomButton from "../../../components/CustomButton"
+import CustomTag from "../../../components/CustomTag"
+import { Link } from "react-router-dom"
+import CustomTimeline from "../../../components/CustomTimeline"
 
 const HistoryPage: FC = () => {
     return(
@@ -26,19 +29,21 @@ const HistoryPage: FC = () => {
                         </ButtonGroup>
                         
 
-                        <div className="mx-24 my-10">
-                            <div className="flex justify-between divide-x-2 rounded-lg bg-white px-4 py-3 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]">
-                                <div className="">
-                                    <span>Monday 1.1.2024</span>
-                                    <div>
-                                        stepper here
+                        <div className="justify-center rounded border-t border-gray-200 px-2 py-4">
+                                    
+                                    <div className="mb-5 grid grid-cols-1 justify-between gap-x-10 divide-x-2 rounded-lg bg-white shadow-lg md:mb-5 lg:mx-24 lg:my-10 lg:grid-cols-2 lg:flex-row">
+                                        <div className="ml-5 mr-auto grid gap-x-4 px-3 py-4">
+                                            <span className="font-bold">Date: </span>
+                                            <CustomTimeline data={[{time:"9h", station:"Station A"},{time:"11h", station:"Station B"}]}></CustomTimeline>
+                                        </div>
+
+                                        <div className="grid justify-center gap-y-4 py-10  lg:ml-32 xl:ml-40">
+                                            <CustomTag color={"red"} content={"Expire"}></CustomTag>
+                                            <Link to={`/ticket-details/:id`}>
+                                                <CustomButton type="outlined" content="More Details" shape={""}></CustomButton>
+                                            </Link>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="grid gap-y-4 px-6 py-10">
-                                    <CustomButton type="filled" content="Invalid" shape={""}></CustomButton>
-                                    <CustomButton type="outlined" content="More details" shape={""}></CustomButton>
-                                </div>
-                            </div>
                         </div>
                         
                 </div>

@@ -101,7 +101,7 @@ const SchedulePage: FC = () => {
                                     {
                                         stations.map((st,id) => {
                                             return(
-                                                <option key={id} value={st.id} >{st.stationName}+{st.id}</option>
+                                                <option key={id} value={st.id} >{st.stationName}</option>
                                             )
                                         })
                                     }
@@ -112,12 +112,12 @@ const SchedulePage: FC = () => {
                                 <Label htmlFor="start">Search your destination</Label>
                                 <select id="destination" name="end" className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400"
                                     value={end}
-                                    onChange={e => {handleChanges(e.target.value); setEndID(+e.target.value); console.log(e.target.value) }}>
+                                    onChange={e => {handleChanges(e.target.value); setEndID(+e.target.value)}}>
                                     <option selected>Choose your destination </option>
                                     {
                                         stations.map((dx, id) => {
                                             return(
-                                                <option key={id} value={dx.id} >{dx.stationName}+{dx.id}</option>
+                                                <option key={id} value={dx.id} >{dx.stationName}</option>
                                             )
                                         })
                                     }
@@ -139,13 +139,14 @@ const SchedulePage: FC = () => {
                     </form>
 
                     <div className="justify-center rounded border-t border-gray-200 px-2 py-4 ">
-                        {
+                        {/* {
                             searchResult.map((t,id) => {
                                 return(
                                     <div key={id} className="mb-5 grid grid-cols-1 justify-between gap-x-10 divide-x-2 rounded-lg bg-white shadow-lg md:mb-5 lg:mx-24 lg:my-10 lg:grid-cols-2 lg:flex-row">
                                         <div className="ml-5 mr-auto flex gap-x-4 px-3 py-4">
+                                            
                                             <CustomTimeline data={[{time:t.departureTime, station:t.createdBy},{time:t.arrivalTime, station:t.createdTime}]}></CustomTimeline>
-
+                                            
                                         </div>
 
                                         <div className="grid justify-center gap-y-4 py-10  lg:ml-32 xl:ml-40">
@@ -159,7 +160,16 @@ const SchedulePage: FC = () => {
                                     </div>
                                 )
                             }) 
-                        }
+                        } */}
+                            {
+                                searchResult.map((t) =>{
+                                    return(
+                                        <div key={t.route?.stations?.id}>        
+                                            <div >Log: </div>
+                                        </div>
+                                    )
+                                })
+                            }
                         
                         <div className="p-2 text-center ">
                             <span>No more result</span>

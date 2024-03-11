@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import CustomButton from "../../../components/CustomButton";
 
 const MyModal = ({visible, onclose}) => {
@@ -16,12 +17,8 @@ const MyModal = ({visible, onclose}) => {
                     <span className="text-lg font-semibold">Please wait for us to verify your ticket.</span>
                 </div>
                 <div className="flex justify-between py-4">
-                    <CustomButton onClick={handleOnclose} 
-                        content="close">
-                        Close
-                    </CustomButton>
-                    <CustomButton type="filled" content="Check Ticket Status" >
-                    </CustomButton>
+                    <CustomButton onClick={handleOnclose} content="Close"></CustomButton>
+                    <Link to={'/history'}><CustomButton type="filled" content="Check Ticket Status"></CustomButton></Link>
                 </div>
                 
             </div>
