@@ -89,45 +89,45 @@ import {
 
 import { HiPaperAirplane } from "react-icons/hi2";
 
-import AdminLayout from "../../layouts/AdminArea/AdminLayout";
-import { ScheduleModal } from "../../components/AdminArea/ScheduleModal";
-import { ScheduleBusModal } from "../../components/AdminArea/ScheduleBusModal";
+import AdminLayout from "../../../layouts/Layout";
+import { ScheduleModal } from "../../../components/AdminArea/ScheduleModal";
+import { ScheduleBusModal } from "../../../components/AdminArea/ScheduleBusModal";
 // import { type Record } from "../../models/record";
 // import { HttpResponse } from "../../models/httpResponse";
 import {
   fetchRoundPageNumber,
   getAllSchedule,
   searchSchedulePagination,
-} from "../../services/AdminArea/scheduleService";
+} from "../../../services/AdminArea/scheduleService";
 
 // eslint-disable-next-line no-unused-vars
 import { Loading, Notify } from "notiflix";
 // import { toStringDate, toStringTime } from "../../utils/utilityFunctions";
 
-import type { Schedule } from "../../models/AdminArea/schedule/schedule";
-import { initSchedule } from "../../utils/configs/initialSchedule";
-import type { ScheduleBus } from "../../models/AdminArea/schedule/scheduleBus";
-import { initScheduleBus } from "../../utils/configs/initialScheduleBus";
+import type { Schedule } from "../../../models/AdminArea/schedule/schedule";
+import { initSchedule } from "../../../utils/configs/initialSchedule";
+import type { ScheduleBus } from "../../../models/AdminArea/schedule/scheduleBus";
+import { initScheduleBus } from "../../../utils/configs/initialScheduleBus";
 
 // import { resendEmail } from "../../services/mailService";
 
 // import { NOTIFY } from "../../utils/configs/notify";
 
 // import { RES_CODE, STATUS_CODE } from "../../utils/configs/statusCode";
-import { TYPE } from "../../utils/configs/type";
-import { APPLICATION_URL } from "../../utils/configs/routes/applicationUrl";
-import type { Station } from "../../models/AdminArea/station/station";
-import httpRequest from "../../utils/httpRequest";
-import authHeader from "../../utils/authHeader";
-import { HttpResponse } from "../../models/httpResponse";
-import type { Stations } from "../../models/AdminArea/station/stations/stations";
-import { getAllStation } from "../../services/AdminArea/stationService";
-import { initStation } from "../../utils/configs/initialStation";
-import { getAllScheduleBus } from "../../services/AdminArea/scheduleBusService";
-import CustomDropdown from "../../components/CustomDropdown";
-import CustomDatePicker from "../../components/CustomCalendar";
+import { TYPE } from "../../../utils/configs/type";
+import { APPLICATION_URL } from "../../../utils/configs/routes/applicationUrl";
+import type { Station } from "../../../models/AdminArea/station/station";
+import httpRequest from "../../../utils/httpRequest";
+import authHeader from "../../../utils/authHeader";
+import { HttpResponse } from "../../../models/httpResponse";
+import type { Stations } from "../../../models/AdminArea/station/stations/stations";
+import { getAllStation } from "../../../services/AdminArea/stationService";
+import { initStation } from "../../../utils/configs/initialStation";
+import { getAllScheduleBus } from "../../../services/AdminArea/scheduleBusService";
+import CustomDropdown from "../../../components/CustomDropdown";
+import CustomDatePicker from "../../../components/CustomCalendar";
 
-const SchedulePage: FC = () => {
+const MANAGE_SchedulePage: FC = () => {
   const [date, setDate] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
@@ -149,45 +149,139 @@ const SchedulePage: FC = () => {
   const [isCompleted, setIsCompleted] = useState<boolean>(false); // track on create success
   // end of modal
 
-  const [searchResultSchedule, setSearchResultSchedule] = useState<Schedule[]>(
+  const [searchResultSchedule, setSearchResultSchedule] = useState<Schedule[] | ScheduleBus[]>(
     []
   );
 
   const [getAllScheduleBusData, setGetAllScheduleBusData] = useState<
     ScheduleBus[]
   >([]);
+  
 
-  const [selectedStartStationOption, setSelectedStartStationOption] =
-    useState("");
-  const [selectedEndStationOption, setSelectedEndStationOption] = useState("");
-  const handleDropdownChange = (option: string, dropdownType: string) => {
-    if (dropdownType === "start") {
-      // Find the station ID based on the selected station name
-      const selectedStartStation = stationNames.find(
-        (station) => station === option
-      );
-      if (selectedStartStation) {
-        // Update startStationId with the found station name
-        setSelectedStartStationOption(selectedStartStation);
-        setStartStationId(startStationId);
-        console.log("Selected Start Station:", selectedStartStation);
-        console.log("startStationId:", startStationId);
+  // Not Filter
+  /* useEffect(() => {
+    const getStationData = async () => {
+      try {
+        const res = await getAllStation();
+        if (res.status === 200) {
+          console.log("res.data: ", res.data);
+          if (Array.isArray(res.data)) {
+            const stations = res.data;
+            const names = stations.map(station => station.stationName);
+            const ids = stations.map(station => station.id);
+            console.log("stationName: ", names);
+            console.log("stationId: ", ids);
+            setStationNames(names);
+            setStationIds(ids);
+          }
+        }
+      } catch (error) {
+        console.error("An error occurred when fetching station names:", error);
       }
-    } else if (dropdownType === "end") {
-      // Find the station ID based on the selected station name
-      const selectedEndStation = stationNames.find(
-        (station) => station === option
-      );
-      if (selectedEndStation) {
-        // Update endStationId with the found station name
-        setSelectedEndStationOption(selectedEndStation);
-        setEndStationId(endStationId);
-        console.log("Selected End Station:", selectedEndStation);
-        console.log("endStationId:", endStationId);
+    };
+
+    getStationData();
+  }, []);
+
+  const handleDropdownChange = (stationName: string, type: "start" | "end") => {
+    console.log(`${type} station selected:`, stationName);
+
+    // Find the index of the selected station name in the station names array
+    const stationIndex = stationNames.indexOf(stationName);
+
+    // If the station is found, update the corresponding state variables
+    if (stationIndex !== -1) {
+      const stationId = stationIds[stationIndex] ?? null; // Ensure stationId is of type number | null
+
+      if (type === "start") {
+        // Handle start station logic
+        console.log("Handling start station logic");
+        console.log(`${type} station ID:`, stationId);
+        setStartStation(stationName);
+        setStartStationId(stationId);
+      } else {
+        console.log("Handling end station logic");
+        console.log(`${type} station ID:`, stationId);
+        setEndStation(stationName);
+        setEndStationId(stationId);
+      }
+    }
+  }; */
+
+  useEffect(() => {
+    const fetchDataForFilteringStationsArray = async () => {
+      try {
+        const res = await getAllStation();
+  
+        if (res.status === 200) {
+          // Assuming res.data is an array of Station objects
+          const stationsData: Station[] = Array.isArray(res.data) ? res.data : [res.data];
+  
+          // Filter the stations array
+          const filteredStations = stationsData.filter(
+            (station: Station) =>
+              station.stationName !== endStation &&
+              station.stationName !== startStation
+          );
+
+          console.log("Filtered Stations Array:", filteredStations);
+
+           // Extract station names and ids from the filtered stations
+          const filteredStationNames = filteredStations
+            .map((station: Station) => station.stationName)
+            .filter((name) => name !== null) as string[];
+
+          const filteredStationIds = filteredStations
+            .map((station: Station) => station.id)
+            .filter((id) => id !== null) as number[];
+
+          console.log("stationName in Filtered Stations Array:", filteredStationIds);
+          console.log("stationId in Filtered Stations Array:", filteredStationIds);
+  
+          // Update station names and ids states
+          setStationNames(filteredStationNames);
+          setStationIds(filteredStationIds);
+        } else {
+          console.error("Failed to fetch data for filtering stations array:", res);
+        }
+      } catch (error) {
+        console.error(
+          "An error occurred when fetching data for filtering stations array:",
+          error
+        );
+      }
+    };
+  
+    fetchDataForFilteringStationsArray();
+  }, [startStation, endStation]);
+
+  const handleDropdownChange = (stationName: string, type: "start" | "end") => {
+    console.log(`${type} station selected:`, stationName);
+  
+    // Find the index of the selected station name in the filtered station names array
+    const stationIndex = stationNames.indexOf(stationName);
+  
+    // If the station is found, update the corresponding state variables
+    if (stationIndex !== -1) {
+      const stationId = stationIds[stationIndex] ?? null; // Ensure stationId is of type number | null
+  
+      if (type === "start") {
+        // Handle start station logic
+        console.log("Handling start station logic");
+        console.log(`${type} station ID:`, stationId);
+        setStartStation(stationName);
+        setStartStationId(stationId);
+      } else {
+        console.log("Handling end station logic");
+        console.log(`${type} station ID:`, stationId);
+        setEndStation(stationName);
+        setEndStationId(stationId);
       }
     }
   };
-
+  
+  
+  
   const [selectedDatePicker, setSelectedDatePicker] = useState<string>("");
   const handleDateChange = (date: Date | null) => {
     if (date) {
@@ -217,34 +311,19 @@ const SchedulePage: FC = () => {
   };
   // end of pagination
 
-  /*   const Submit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // convert into filter
-    if (startStationId !== null && endStationId !== null) {
-      searchSchedule(startStationId, endStationId, date);
-    }
-    console.log("Start Station:", startStation);
-    console.log("End Station:", endStation);
-    console.log("Selected Date:", selectedDatePicker);
-  }; */
-
   const Submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    console.log("Start Station ID:", selectedStartStationOption);
-    console.log("End Station ID:", selectedEndStationOption);
-
-    if (selectedStartStationOption && selectedEndStationOption) {
+  
+    console.log("Start Station ID:", startStationId);
+    console.log("End Station ID:", endStationId);
+  
+    if (startStationId !== null && endStationId !== null) {
       console.log("Both start and end stations are selected.");
-
+  
       if (selectedDatePicker) {
         console.log("Selected Date:", selectedDatePicker);
         // Call searchSchedule with the correct parameters
-        searchSchedule(
-          startStationId !== null ? startStationId : undefined,
-          endStationId !== null ? endStationId : undefined,
-          selectedDatePicker
-        );
+        searchSchedule(startStationId, endStationId, selectedDatePicker);
       } else {
         console.log("Please select a date.");
       }
@@ -253,8 +332,9 @@ const SchedulePage: FC = () => {
     }
   };
 
+  // fetch station Names
   useEffect(() => {
-    const fetchStationNames = async () => {
+    const fetchStationNamesAndIds = async () => {
       try {
         const res = await getAllStation();
         if (res.status === 200) {
@@ -266,8 +346,8 @@ const SchedulePage: FC = () => {
             const stationId: number[] = res.data.flatMap(
               (station: Station) => station.id ?? 0
             );
-            // console.log("stationName: ", stationName);
-            // console.log("stationId: ", stationId);
+            console.log("stationName: ", stationName);
+            console.log("stationId: ", stationId);
             setStationNames(stationName);
             setStationIds(stationId);
             setStations(res.data);
@@ -282,7 +362,7 @@ const SchedulePage: FC = () => {
       }
     };
 
-    fetchStationNames();
+    fetchStationNamesAndIds();
   }, []);
 
   // Fetch all schedule data
@@ -326,7 +406,7 @@ const SchedulePage: FC = () => {
         searchString ?? null
       );
       if (res.status === 200) {
-        setSearchResultSchedule(res.data as Schedule[]);
+        setSearchResultSchedule(res.data as Schedule[] | ScheduleBus[]);
         const totalSchedule = res.data.length;
         /* ---------------------------------------------- round page number logic --------------------------------------------- */
         // 50 / 10 = 5
@@ -425,49 +505,7 @@ const SchedulePage: FC = () => {
     console.log("stationId Array:", stationIds);
   }, [startStation, endStation, stations, stationNames, stationIds]); */
 
-  useEffect(() => {
-    const fetchAllScheduleBuses = async () => {
-      try {
-        const res = await getAllScheduleBus();
-
-        if (res.status === 200) {
-          // Assuming res.data is an array of Station objects
-          const scheduleBusData: ScheduleBus[] = Array.isArray(res.data)
-            ? res.data
-            : [res.data];
-
-          console.log("scheduleBusData Array:", scheduleBusData);
-
-          const busNumber = scheduleBusData.map(
-            (scheduleBus: ScheduleBus) => scheduleBus.bus?.busNumber
-          );
-
-          const driverFullName = scheduleBusData.map(
-            (scheduleBus: ScheduleBus) => scheduleBus.driver?.fullname ?? "N/A"
-          );
-
-          const seatCapacity = scheduleBusData.map(
-            (scheduleBus: ScheduleBus) => scheduleBus.leftSeats
-          );
-
-          console.log("busNumber Array:", busNumber);
-          console.log("driverFullName Array:", driverFullName);
-          console.log("seatCapacity Array:", seatCapacity);
-        } else {
-          console.error("Failed to fetch data for scheduleBusData array:", res);
-        }
-      } catch (error) {
-        console.error(
-          "An error occurred when fetching data for filtering stations array:",
-          error
-        );
-      }
-    };
-
-    fetchAllScheduleBuses();
-  }, []);
-
-  useEffect(() => {
+  /* useEffect(() => {
     const fetchDataForFilteringStationsArray = async () => {
       try {
         const res = await getAllStation();
@@ -566,7 +604,7 @@ const SchedulePage: FC = () => {
     };
 
     fetchDataForDepartureAndArrivalStop();
-  }, []);
+  }, []); */
 
   function formatDate(dateString: string | undefined): string {
     if (!dateString) return ""; // Return empty string if dateString is null or undefined
@@ -576,7 +614,7 @@ const SchedulePage: FC = () => {
   }
 
   return (
-    <AdminLayout isFooter={false}>
+    <AdminLayout isFooter={true}>
       <div className="px-4 pt-6">
         <div className="block items-center justify-between border-b border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 sm:flex">
           <div className="mb-1 w-full">
@@ -588,9 +626,9 @@ const SchedulePage: FC = () => {
                       <CustomDropdown
                         label="Start Station"
                         options={stationNames}
-                        value={selectedStartStationOption}
-                        onChange={(option) =>
-                          handleDropdownChange(option, "start")
+                        value={startStation}
+                        onChange={(startStationName) =>
+                          handleDropdownChange(startStationName, "start")
                         }
                       />
                     </div>
@@ -598,9 +636,9 @@ const SchedulePage: FC = () => {
                       <CustomDropdown
                         label="End Station"
                         options={stationNames}
-                        value={selectedEndStationOption}
-                        onChange={(option) =>
-                          handleDropdownChange(option, "end")
+                        value={endStation}
+                        onChange={(endStationName) =>
+                          handleDropdownChange(endStationName, "end")
                         }
                       />
                     </div>
@@ -679,63 +717,107 @@ const SchedulePage: FC = () => {
                     <Table.Body className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
                       {searchResultSchedule.length > 0
                         ? searchResultSchedule.map((value, index) => (
-                            <Table.Row
-                              key={index}
-                              className="hover:bg-gray-100 dark:hover:bg-gray-700"
-                            >
-                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
-                                {index + 1}
-                              </Table.Cell>
-                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
-                                {/* {value.serialNo} */}
-                                {(value as Schedule).route?.routeName}
-                              </Table.Cell>
-                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
-                                {/* {value.formNo} */}
-                                {(value as Schedule).departureTime}
-                              </Table.Cell>
-                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
-                                {/* {value.code} */}
-                                {(value as Schedule).arrivalTime}
-                              </Table.Cell>
-                              <Table.Cell>
-                                <div className="flex items-center gap-x-2 whitespace-nowrap">
-                                  <Tooltip content="Resend email">
-                                    <button
-                                    // onClick={() => handleResendEmail(value)}
-                                    >
-                                      <HiPaperAirplane className="action-btn text-xl" />
-                                    </button>
-                                  </Tooltip>
-                                  <Tooltip content="Edit">
-                                    <button
-                                      onClick={() => {
-                                        setIsOpen(true);
-                                        setType(TYPE.EDIT);
-                                        setSchedule({
-                                          ...value,
-                                          route: null,
-                                          departureTime: null,
-                                          arrivalTime: null,
-                                          date: null,
-                                        });
-                                        /* setScheduleBus({
-                                        ...value,
-                                        schedule: null,
-                                        bus: null,
-                                        driver: null,
-                                        leftSeats: null,
-                                      }); */
-                                      }}
-                                      /* disabled={
-                                      value.status === STATUS_CODE.DEACTIVE
-                                    } */
-                                    >
-                                      <HiPencil className="action-btn text-xl" />
-                                    </button>
-                                  </Tooltip>
+                          <Table.Row
+                            key={index}
+                            className="hover:bg-gray-100 dark:hover:bg-gray-700"
+                          >
+                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                              {index + 1}
+                            </Table.Cell>
+                            {/* value as ScheduleBus &&
+                              getAllScheduleBusData.map((scheduleBus) => (
+                                <React.Fragment key={scheduleBus.schedule?.route?.id}>
+                                  <Table.Cell className="whitespace-nowrap text-base font-medium text-gray-900 dark:text-white">
+                                    {scheduleBus.bus?.busNumber}
+                                  </Table.Cell>
+                                  <Table.Cell className="whitespace-nowrap text-base font-medium text-gray-900 dark:text-white">
+                                    {scheduleBus.driver?.fullname ?? "N/A"}
+                                  </Table.Cell>
+                                  <Table.Cell className="whitespace-nowrap text-base font-medium text-gray-900 dark:text-white">
+                                    {scheduleBus.bus?.capacity}
+                                  </Table.Cell>
+                                </React.Fragment>
+                              ))} */}
 
-                                  {/* <Tooltip content="Publish">
+                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                              {/* {value.formNo} */}
+                              {null}
+                            </Table.Cell>
+                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                              {/* {value.formNo} */}
+                              {null}
+                            </Table.Cell>
+                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                              {/* {value.formNo} */}
+                              {null}
+                            </Table.Cell>
+
+                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                              {/* {value.serialNo} */}
+                              {(value as Schedule).route?.routeName}
+                            </Table.Cell>
+                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                              {/* {value.formNo} */}
+                              {(value as Schedule).route?.id}
+                            </Table.Cell>
+                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                              {/* {value.formNo} */}
+                              {(value as Schedule).date}
+                            </Table.Cell>
+                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                              {/* {value.formNo} */}
+                              {(value as Schedule).departureTime}
+                            </Table.Cell>
+                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                              {/* {value.code} */}
+                              {(value as Schedule).arrivalTime}
+                            </Table.Cell>
+                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                              {/* {value.code} */}
+                              {startStation}
+                            </Table.Cell>
+                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                              {/* {value.code} */}
+                              {endStation}
+                            </Table.Cell>
+                            <Table.Cell>
+                              <div className="flex items-center gap-x-2 whitespace-nowrap">
+                                <Tooltip content="Resend email">
+                                  <button
+                                  // onClick={() => handleResendEmail(value)}
+                                  >
+                                    <HiPaperAirplane className="action-btn text-xl" />
+                                  </button>
+                                </Tooltip>
+                                <Tooltip content="Edit">
+                                  <button
+                                    onClick={() => {
+                                      setIsOpen(true);
+                                      setType(TYPE.EDIT);
+                                      setSchedule({
+                                        ...value,
+                                        route: null,
+                                        departureTime: null,
+                                        arrivalTime: null,
+                                        date: null,
+                                      });
+                                      /* setScheduleBus({
+                                      ...value,
+                                      schedule: null,
+                                      bus: null,
+                                      driver: null,
+                                      leftSeats: null,
+                                    }); */
+                                    }}
+                                  /* disabled={
+                                  value.status === STATUS_CODE.DEACTIVE
+                                } */
+                                  >
+                                    <HiPencil className="action-btn text-xl" />
+                                  </button>
+                                </Tooltip>
+
+                                {/* <Tooltip content="Publish">
                                   <button
                                   // disabled={
                                   //     value.status === STATUS_CODE.ACTIVE
@@ -748,7 +830,7 @@ const SchedulePage: FC = () => {
                                   </button>
                                 </Tooltip> */}
 
-                                  {/* <Tooltip content="Withdraw">
+                                {/* <Tooltip content="Withdraw">
                                   <button
                                   // disabled={
                                   //     value.status === STATUS_CODE.DEACTIVE
@@ -758,13 +840,13 @@ const SchedulePage: FC = () => {
                                     <HiReply className={`action-btn text-xl`} />
                                   </button>
                                 </Tooltip> */}
-                                </div>
-                              </Table.Cell>
-                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
-                                {null}
-                              </Table.Cell>
-                            </Table.Row>
-                          ))
+                              </div>
+                            </Table.Cell>
+                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                              {null}
+                            </Table.Cell>
+                          </Table.Row>
+                        ))
                         : getAllScheduleBusData.map((value, index) => (
                             <Table.Row
                               key={index}
@@ -860,8 +942,7 @@ const SchedulePage: FC = () => {
                                       <HiPencil className="action-btn text-xl" />
                                     </button>
                                   </Tooltip>
-
-                                  {/* <Tooltip content="Publish">
+                                {/* <Tooltip content="Publish">
                                   <button
                                   // disabled={
                                   //     value.status === STATUS_CODE.ACTIVE
@@ -874,7 +955,7 @@ const SchedulePage: FC = () => {
                                   </button>
                                 </Tooltip> */}
 
-                                  {/* <Tooltip content="Withdraw">
+                                {/* <Tooltip content="Withdraw">
                                   <button
                                   // disabled={
                                   //     value.status === STATUS_CODE.DEACTIVE
@@ -884,13 +965,13 @@ const SchedulePage: FC = () => {
                                     <HiReply className={`action-btn text-xl`} />
                                   </button>
                                 </Tooltip> */}
-                                </div>
-                              </Table.Cell>
-                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
-                                {null}
-                              </Table.Cell>
-                            </Table.Row>
-                          ))}
+                              </div>
+                            </Table.Cell>
+                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                              {null}
+                            </Table.Cell>
+                          </Table.Row>
+                        ))}
                     </Table.Body>
                   </Table>
                   {/* Pagination of table */}
@@ -931,4 +1012,5 @@ const SchedulePage: FC = () => {
     </AdminLayout>
   );
 };
-export default SchedulePage;
+
+export default MANAGE_SchedulePage;

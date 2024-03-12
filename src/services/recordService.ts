@@ -1,38 +1,35 @@
-import type { Record } from "../models/record";
-import * as httpRequest from "../utils/httpRequest";
-import authHeader from "../utils/authHeader";
-import type { HttpResponse } from "../models/httpResponse";
-import { toStringDate } from "../utils/utilityFunctions";
-import type { UserLogin } from "../models/AdminArea/user/user";
-import { STORAGE } from "../utils/configs/storage";
+import type { Record } from '../models/record';
+import * as httpRequest from '../utils/httpRequest';
+import authHeader from '../utils/authHeader';
+import type { HttpResponse } from '../models/httpResponse';
+import { toStringDate } from '../utils/utilityFunctions';
+import type { UserLogin } from '../models/user';
+import { STORAGE } from '../utils/configs/storage';
 
 export const getRecordByCode = async (code: string) => {
   const res: HttpResponse = await httpRequest.get(`records/code/${code}`);
-  return { data: res, status: 200 };
-};
+  return res;
+}
 
-export const searchRecordPagination = async (
-  start: number,
-  limit: number,
-  search?: string
-) => {
-  const res: HttpResponse = await httpRequest.get("records", {
+export const searchRecordPagination = async (start: number, limit: number, search?: string) => {
+  const res: HttpResponse = await httpRequest.get('records', {
     params: {
       start,
       limit,
-      search,
+      search
     },
-    headers: authHeader(),
+    headers: authHeader()
   });
-  return { data: res, status: 200 };
-};
+  return res;
+
+}
 
 export const getLdapUsers = async () => {
-  const res: HttpResponse = await httpRequest.get("ldapusers", {
-    headers: authHeader(),
+  const res: HttpResponse = await httpRequest.get('ldapusers', {
+    headers: authHeader()
   });
-  return { data: res, status: 200 };
-};
+  return res;
+}
 
 export const createRecord = async (record: Record) => {
   const formData: FormData = new FormData();
@@ -52,56 +49,44 @@ export const createRecord = async (record: Record) => {
   formData.append("firstname", record.staff.firstname);
   formData.append("lastname", record.staff.lastname);
 
-  const res: HttpResponse = await httpRequest.post("records", formData, {
-    headers: authHeader(),
+
+  const res: HttpResponse = await httpRequest.post('records', formData, {
+    headers: authHeader()
   });
-  return { data: res, status: 200 };
-};
+  return res;
+}
 
 export const updateRecord = async (record: Record) => {
-  // let user = JSON.parse(sessionStorage.getItem(STORAGE.PIT_USER) as string);
-  const user = JSON.parse(sessionStorage.getItem(STORAGE.PIT_ROLE)!); // update
+  const user = JSON.parse(sessionStorage.getItem(STORAGE.PIT_USER) as string);
   const updateRecord = {
-    id: record.id,
-    whMonthStart: toStringDate(record.whMonthStart),
-    whMonthEnd: toStringDate(record.whMonthEnd),
-    publishedDate: toStringDate(record.publishedDate),
-    formNo: record.formNo,
-    description: record.description,
-    updatedUser: user.id,
-  };
-  const res: HttpResponse = await httpRequest.put("records", updateRecord, {
-    headers: authHeader(),
+    "id": record.id,
+    "whMonthStart": toStringDate(record.whMonthStart),
+    "whMonthEnd": toStringDate(record.whMonthEnd),
+    "publishedDate": toStringDate(record.publishedDate),
+    "formNo": record.formNo,
+    "description": record.description,
+    "updatedUser": user.id
+  }
+  const res: HttpResponse = await httpRequest.put('records', updateRecord, {
+    headers: authHeader()
   });
 
-  return { data: res, status: 200 };
-};
+  return res;
+}
 
 export const download = async (path: string) => {
-  const res = await httpRequest.post(
-    "records/download",
-    { path },
-    { responseType: "blob" }
-  );
-  return { data: res, status: 200 };
-};
+  const res = await httpRequest.post('records/download', { path }, { responseType: 'blob', });
+  return res;
+}
 
 export const publishRecord = async (id: number) => {
-  const res = await httpRequest.put(
-    `records/publish/${id}`,
-    {},
-    {
-      headers: authHeader(),
-    }
-  );
-  return { data: res, status: 200 };
+  const res = await httpRequest.put(`records/publish/${id}`, {}, {
+    headers: authHeader()
+  });
+  return res;
 };
 
 export const withdrawRecord = async (id: number) => {
-  const res = await httpRequest.put(
-    `records/withdraw/${id}`,
-    {},
-    { headers: authHeader() }
-  );
-  return { data: res, status: 200 };
+  const res = await httpRequest.put(`records/withdraw/${id}`, {}, { headers: authHeader() });
+  return res;
 };

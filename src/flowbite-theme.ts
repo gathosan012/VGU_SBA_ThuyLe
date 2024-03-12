@@ -70,7 +70,7 @@ const flowbiteTheme: CustomFlowbiteTheme = {
     field: {
       input: {
         colors: {
-          gray: "bg-white border-gray-300 text-gray-1000 focus:border-cyan-500 focus:ring-cyan-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-cyan-500 dark:focus:ring-cyan-500 disabled:text-gray-900 disabled:opacity-100",
+          gray: "bg-white border-gray-300 text-gray-1000 focus:border-[#F5821F] focus:ring-[#F5821F] dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-cyan-500 dark:focus:ring-cyan-500 disabled:text-gray-900 disabled:opacity-50",
         },
       },
     },

@@ -9,7 +9,7 @@ import {
   HiReply,
 } from "react-icons/hi";
 
-import AdminLayout from "../../layouts/AdminArea/AdminLayout";
+import AdminLayout from "../../layouts/Layout";
 import { RecordModal } from "../../components/AdminArea/RecordModal";
 import { type Record } from "../../models/record";
 import { HttpResponse } from "../../models/httpResponse";

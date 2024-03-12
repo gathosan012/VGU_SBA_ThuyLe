@@ -1,13 +1,12 @@
-/* eslint-disable prettier/prettier */
-import { FC } from "react";
+import type { FC, FormEvent } from "react";
 
 interface ButtonProps {
     disabled?: boolean;
-    shape: 'rounded' | '';
+    shape?: 'rounded' | '';
     type?: "outlined" | "filled";
     content: string;
     onNavbar?: boolean;
-    onClick?: () => void;
+    onClick?: (e: FormEvent<HTMLFormElement>) => void;
     buttonWidth?: string;
 }
 

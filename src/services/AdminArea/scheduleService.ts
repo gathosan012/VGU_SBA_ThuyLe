@@ -236,7 +236,7 @@ export const searchSchedulePagination = async (
   startStationId: number | null,
   endStationId: number | null,
   date: string | null
-): Promise<ApiResponse<Schedule[] | ScheduleBus[]>> => {
+): Promise<ApiResponse<Schedule[]>> => {
   try {
     const res = await httpRequest.get("/schedules/search", {
       params: {

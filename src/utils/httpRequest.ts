@@ -2,8 +2,6 @@ import axios, { type InternalAxiosRequestConfig } from "axios";
 import { isLogin } from "../services/authService";
 import authHeader from "./authHeader";
 
-// import { refreshToken } from "../services/authService";
-
 const httpRequest = axios.create({
   baseURL: import.meta.env["VITE_API_URL"],
 });
@@ -24,21 +22,6 @@ httpRequest.interceptors.request.use(
     return Promise.reject(error);
   }
 );
-
-/* httpRequest.interceptors.response.use(
-  (res) => {
-    return { data: res, status: 200 };
-  },
-  async (err) => {
-    const originalConfig = err.config;
-    if (err.response.status === 401) {
-      const accessToken = await refreshToken();
-      originalConfig.headers["authorization"] = accessToken;
-      return httpRequest(originalConfig);
-    }
-    return Promise.reject(err);
-  }
-); */
 
 export const get = async (path: string, options = {}) => {
   const response = await httpRequest.get(path, options);

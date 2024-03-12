@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import { Button, Card, Checkbox, Label, TextInput } from "flowbite-react";
 import { useState, type FC, type FormEvent } from "react";
 import { Link, type NavigateFunction, useNavigate } from "react-router-dom";
@@ -11,7 +10,6 @@ import { login } from "../services/authService";
 import { APPLICATION_URL } from "../utils/configs/routes/applicationUrl";
 import { STORAGE } from "../utils/configs/storage";
 import { NOTIFY } from "../utils/configs/notify";
-// import { RES_CODE } from "../utils/configs/statusCode";
 
 const LogInPage: FC = function () {
   const navigate: NavigateFunction = useNavigate();
@@ -26,14 +24,17 @@ const LogInPage: FC = function () {
       const response = await login(username, password);
       if (response.data.token) {
         const token = response.data.token;
-        const role = response.data.role ?? ""; // Use nullish coalescing operator to provide a default value of an empty string
-        sessionStorage.setItem(STORAGE.PIT_TOKEN, token);
-        sessionStorage.setItem(STORAGE.PIT_ROLE, role);
+        const role = response.data.role ?? "";
+        const userId = response.data.userId; // Use nullish coalescing operator to provide a default value of an empty string
+        sessionStorage.setItem(STORAGE.SBA_TOKEN, token);
+        sessionStorage.setItem(STORAGE.SBA_ROLE, role);
+        sessionStorage.setItem(STORAGE.SBA_USERID, userId);
         if (isRememberMe) {
-          Cookies.set(STORAGE.PIT_TOKEN, token, { expires: 30 });
-          Cookies.set(STORAGE.PIT_ROLE, role, { expires: 30 });
+          Cookies.set(STORAGE.SBA_TOKEN, token, { expires: 30 });
+          Cookies.set(STORAGE.SBA_ROLE, role, { expires: 30 });
+          Cookies.set(STORAGE.SBA_USERID, userId, {expires: 30})
         }
-        navigate(APPLICATION_URL.DASHBOARD_URL);
+        navigate(APPLICATION_URL.HOME_URL);
         Loading.remove();
       } else {
         Notify.failure(NOTIFY.SERVER_ERROR);
@@ -44,78 +45,6 @@ const LogInPage: FC = function () {
       Loading.remove();
     }
   };
-
-  // Original
-  /*   const submitForm = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    Loading.hourglass();
-    try {
-      const response = await login(username, password);
-      if (response.resCode === RES_CODE.OK) {
-        let user = response.payload.user;
-        let token = response.payload.token;
-        // let refreshToken = response.payload.refreshToken;
-        sessionStorage.setItem(STORAGE.PIT_TOKEN, token);
-        sessionStorage.setItem(STORAGE.PIT_USER, JSON.stringify(user));
-        if (isRememberMe) {
-          // Cookies.set(STORAGE.PIT_REFRESH_TOKEN, refreshToken, { expires: 30 });
-          Cookies.set(STORAGE.PIT_TOKEN, token, { expires: 30 });
-          Cookies.set(STORAGE.PIT_USER, JSON.stringify(user), { expires: 30 });
-        }
-        navigate(APPLICATION_URL.RECORD_URL);
-        Loading.remove();
-      } else {
-        Notify.failure(response.resMsg || response.resMsg.message);
-        Loading.remove();
-      }
-    } catch (e) {
-      Notify.failure(NOTIFY.SERVER_ERROR);
-      Loading.remove();
-    }
-  }; */
-
-  // Modified with localStorage
-  /*   const submitForm = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    Loading.hourglass();
-    try {
-      // Hardcoded email and password
-      const email = "admin@gmail.com";
-      const password = "password";
-
-      // Call the login function with hardcoded email and password
-      const response = await login(email, password);
-      if (response.resCode === RES_CODE.OK) {
-        const { user, accessToken, refreshToken } = response.payload;
-
-        // Store accessToken in localStorage as authToken
-        localStorage.setItem("authToken", accessToken);
-
-        // Store user object in sessionStorage
-        /* sessionStorage.setItem(STORAGE.PIT_TOKEN, accessToken);
-            sessionStorage.setItem(STORAGE.PIT_USER, JSON.stringify(user));
-
-            if (isRememberMe) {
-                // Set refreshToken, accessToken, and user in Cookies
-                Cookies.set(STORAGE.PIT_REFRESH_TOKEN, refreshToken, { expires: 30 });
-                Cookies.set(STORAGE.PIT_TOKEN, accessToken, { expires: 30 });
-                Cookies.set(STORAGE.PIT_USER, JSON.stringify(user), { expires: 30 });
-            } 
-
-        // Navigate to RECORD_URL
-        navigate(APPLICATION_URL.RECORD_URL);
-      } else {
-        // Notify failure with response message
-        Notify.failure(response.resMsg || response.resMsg.message);
-      }
-    } catch (e) {
-      // Notify failure for server error
-      Notify.failure(NOTIFY.SERVER_ERROR);
-    } finally {
-      // Remove loading indication
-      Loading.remove();
-    }
-  }; */
 
   return (
     <div className="flex h-screen flex-col items-center justify-center px-6">

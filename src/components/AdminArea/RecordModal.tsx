@@ -13,14 +13,14 @@ import { NOTIFY } from "../../utils/configs/notify";
 import { TYPE } from "../../utils/configs/type";
 import { RES_CODE } from "../../utils/configs/statusCode";
 
-interface Props {
+type Props = {
   type: string;
   isOpen: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   record: Record;
   setRecord: Dispatch<SetStateAction<Record>>;
   setIsCompleted: Dispatch<SetStateAction<boolean>>;
-}
+};
 
 export const RecordModal: FC<Props> = function ({
   type,
@@ -135,7 +135,7 @@ export const RecordModal: FC<Props> = function ({
                     <TextInput
                       id="firstname"
                       name="firstname"
-                      value={record.staff.firstname}
+                      value={record?.staff?.firstname}
                       onChange={(e) => {
                         setRecord({
                           ...record,
@@ -156,7 +156,7 @@ export const RecordModal: FC<Props> = function ({
                     <TextInput
                       id="lastname"
                       name="lastname"
-                      value={record.staff.lastname}
+                      value={record?.staff?.lastname}
                       onChange={(e) => {
                         setRecord({
                           ...record,
@@ -177,7 +177,7 @@ export const RecordModal: FC<Props> = function ({
                     <TextInput
                       id="email"
                       name="email"
-                      value={record.staff.email}
+                      value={record?.staff?.email}
                       onChange={(e) => {
                         setRecord({
                           ...record,
@@ -204,8 +204,8 @@ export const RecordModal: FC<Props> = function ({
                   onChange={(update) => {
                     setRecord({
                       ...record,
-                      whMonthStart: update[0]!,
-                      whMonthEnd: update[1]!,
+                      whMonthStart: update[0] as Date,
+                      whMonthEnd: update[1] as Date,
                     });
                   }}
                   isClearable={true}
@@ -224,7 +224,7 @@ export const RecordModal: FC<Props> = function ({
                   onChange={(date) =>
                     setRecord({
                       ...record,
-                      publishedDate: date!,
+                      publishedDate: date as Date,
                     })
                   }
                   dateFormat="dd/MM/yyyy"
@@ -242,7 +242,7 @@ export const RecordModal: FC<Props> = function ({
                   onChange={(e) => {
                     setRecord({
                       ...record,
-                      seqNo: +e.target.value,
+                      seqNo: +e.target?.value,
                     });
                   }}
                   type="number"
@@ -322,7 +322,7 @@ export const RecordModal: FC<Props> = function ({
               <CustomFileInput
                 file={file}
                 setFile={setFile}
-                fileName={record.file?.name || ""}
+                fileName={record?.file?.name}
               />
             </div>
           )}

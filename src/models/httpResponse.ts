@@ -11,4 +11,5 @@ export interface HttpResponse {
 export interface LoginResponse {
   token: string | null;
   role: string | null;
+  userId: string;
 }

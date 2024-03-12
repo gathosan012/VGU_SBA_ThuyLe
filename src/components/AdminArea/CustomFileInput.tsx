@@ -5,7 +5,7 @@ import type { Dispatch, FC, SetStateAction } from "react";
 import { HiOutlineCloudArrowUp } from "react-icons/hi2";
 import { NOTIFY } from "../../utils/configs/notify";
 
-interface Props {
+type Props = {
   file: File | undefined;
   setFile: Dispatch<SetStateAction<File | undefined>>;
   fileName: string;
@@ -38,20 +38,11 @@ const CustomFileInput: FC<Props> = ({ file, setFile, fileName }) => {
   return (
     <div>
       <div
-        // 4. add onClick handler
         onClick={handleClick}
-        className="bg-violet-50 text-violet-500 hover:bg-violet-100 flex cursor-pointer flex-col items-center gap-2 rounded-lg p-4"
+        className="p-4 flex flex-col items-center gap-2 bg-violet-50 text-violet-500 rounded-lg hover:bg-violet-100 cursor-pointer"
       >
-        <HiOutlineCloudArrowUp className="size-6" />
-        <span>
-          {file
-            ? file.name
-            : fileName
-            ? fileName
-            : `File must be a ${FILE_TYPES} file and less than ${
-                FILE_SIZE / (1024 * 1000)
-              } MB`}
-        </span>
+        <HiOutlineCloudArrowUp className="w-6 h-6" />
+        <span>{!!file ? file?.name : fileName ? fileName : `File must be a ${FILE_TYPES} file and less than ${(FILE_SIZE / (1024 * 1000))} MB`}</span>
         <input
           type="file"
           ref={ref}

@@ -1,8 +1,8 @@
 import { type FC } from "react";
 import { Outlet, Navigate } from "react-router-dom";
 
-import { APPLICATION_URL } from "../../utils/configs/routes/applicationUrl";
-import { isLogin } from "../../services/authService";
+import { APPLICATION_URL } from "../utils/configs/routes/applicationUrl";
+import { isLogin } from "../services/authService";
 
 interface Props {
   redirectPath?: string;

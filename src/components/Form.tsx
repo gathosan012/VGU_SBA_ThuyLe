@@ -75,9 +75,8 @@ function Form() {
                 setText(e.target.value.toUpperCase());
                 setIsError(false);
               }}
-              className={`${
-                isError ? "border-red-600" : "border-gray-500"
-              } mb-7 w-full select-all rounded-full bg-transparent px-6 py-3 placeholder:text-gray-500 dark:text-white`}
+              className={`${isError ? "border-red-600" : "border-gray-500"
+                } mb-7 w-full select-all rounded-full bg-transparent px-6 py-3 placeholder:text-gray-500 dark:text-white`}
               placeholder="Your Tax File Code..."
             />
           </div>
