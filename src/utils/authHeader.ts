@@ -1,7 +1,7 @@
 import { STORAGE } from "./configs/storage";
 
 export default function authHeader() {
-  const userToken = sessionStorage.getItem(STORAGE.PIT_TOKEN)!;
+  const userToken = sessionStorage.getItem(STORAGE.SBA_TOKEN)!;
 
   if (userToken)
     return {

@@ -24,12 +24,15 @@ const LogInPage: FC = function () {
       const response = await login(username, password);
       if (response.data.token) {
         const token = response.data.token;
-        const role = response.data.role ?? ""; // Use nullish coalescing operator to provide a default value of an empty string
-        sessionStorage.setItem(STORAGE.PIT_TOKEN, token);
-        sessionStorage.setItem(STORAGE.PIT_ROLE, role);
+        const role = response.data.role ?? "";
+        const userId = response.data.userId; // Use nullish coalescing operator to provide a default value of an empty string
+        sessionStorage.setItem(STORAGE.SBA_TOKEN, token);
+        sessionStorage.setItem(STORAGE.SBA_ROLE, role);
+        sessionStorage.setItem(STORAGE.SBA_USERID, userId);
         if (isRememberMe) {
-          Cookies.set(STORAGE.PIT_TOKEN, token, { expires: 30 });
-          Cookies.set(STORAGE.PIT_ROLE, role, { expires: 30 });
+          Cookies.set(STORAGE.SBA_TOKEN, token, { expires: 30 });
+          Cookies.set(STORAGE.SBA_ROLE, role, { expires: 30 });
+          Cookies.set(STORAGE.SBA_USERID, userId, {expires: 30})
         }
         navigate(APPLICATION_URL.HOME_URL);
         Loading.remove();
