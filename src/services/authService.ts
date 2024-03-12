@@ -13,19 +13,21 @@ export const login = async (username: string, password: string) => {
 
 
 export const logout = () => {
-  sessionStorage.removeItem(STORAGE.PIT_TOKEN);
-  sessionStorage.removeItem(STORAGE.PIT_ROLE);
+  sessionStorage.removeItem(STORAGE.SBA_TOKEN);
+  sessionStorage.removeItem(STORAGE.SBA_ROLE);
+  sessionStorage.removeItem(STORAGE.SBA_USERID);
 
-  Cookies.remove(STORAGE.PIT_TOKEN);
-  Cookies.remove(STORAGE.PIT_ROLE);
+  Cookies.remove(STORAGE.SBA_TOKEN);
+  Cookies.remove(STORAGE.SBA_ROLE);
+  Cookies.remove(STORAGE.SBA_USERID);
 };
 
 
 export const isLogin = () => {
-  const token = sessionStorage.getItem(STORAGE.PIT_TOKEN)!;
+  const token = sessionStorage.getItem(STORAGE.SBA_TOKEN)!;
   if (token) return true;
   else {
-    const token = Cookies.get(STORAGE.PIT_TOKEN)
+    const token = Cookies.get(STORAGE.SBA_TOKEN)
     if (token) {
       return true;
     } else return false;

@@ -4,9 +4,9 @@ import { Outlet, Navigate } from "react-router-dom";
 import { APPLICATION_URL } from "../utils/configs/routes/applicationUrl";
 import { isLogin } from "../services/authService";
 
-type Props = {
+interface Props {
   redirectPath?: string;
-};
+}
 
 export const PrivateRoutes: FC<Props> = ({
   redirectPath = APPLICATION_URL.LOGIN_URL,

@@ -25,7 +25,6 @@ const SchedulePage: FC = () => {
     const [searchResult, setSearchResult] = useState<Schedule[]>([])
     const [selectDate, setSelectDate] = useState<string>()
 
-
     const handleChange = (s: string) => {
         setStart(s)
     }
@@ -83,8 +82,7 @@ const SchedulePage: FC = () => {
 
     useEffect(() =>{
         SearchResult();
-    },[])
-
+    },[]) 
 
     return(
         <AdminLayout isFooter={true}>
@@ -144,16 +142,29 @@ const SchedulePage: FC = () => {
                                 return(
                                     <div key={id} className="mb-5 grid grid-cols-1 justify-between gap-x-10 divide-x-2 rounded-lg bg-white shadow-lg md:mb-5 lg:mx-24 lg:my-10 lg:grid-cols-2 lg:flex-row">
                                         <div className="ml-5 mr-auto flex gap-x-4 px-3 py-4">
-                                            
-                                            <CustomTimeline data={[{time:t.departureTime, station:t.createdBy},{time:t.arrivalTime, station:t.createdTime}]}></CustomTimeline>
-                                            
+                                                    <CustomTimeline key={id} data={[{time:t.departureTime, station:t.route?.routeName},{time:t.arrivalTime, station:t.route?.routeName}]}></CustomTimeline>
+                                        
+                                                {
+                                                    stations.filter(t => t.id === startID).map(filter => (
+                                                        <ul key={id}>
+                                                            <li>{filter.stationName}</li>
+                                                        </ul>
+                                                    ))   
+                                                }
+                                                {
+                                                    stations.filter(t => t.id === endID).map(filter => (
+                                                        <ul key={id}>
+                                                            <li>{filter.stationName}</li>
+                                                        </ul>
+                                                    ))   
+                                                }
                                         </div>
 
                                         <div className="grid justify-center gap-y-4 py-10  lg:ml-32 xl:ml-40">
                                             <CustomTag color={"red"} content={"Full"}></CustomTag>
+                                            <span className="text-center font-semibold">{t.price}</span>
                                             <Link to={`/ticket-details/${t.id}`}>
                                                 <CustomButton type="filled" content="Buy Ticket" shape={""}>
-                                                    Buy
                                                 </CustomButton>
                                             </Link>
                                         </div>
@@ -161,15 +172,7 @@ const SchedulePage: FC = () => {
                                 )
                             }) 
                         }
-                            {
-                                searchResult.map((t) =>{
-                                    return(
-                                        <div key={t.route?.stations?.id}>        
-                                            <div >Log: </div>
-                                        </div>
-                                    )
-                                })
-                            }
+      
                         
                         <div className="p-2 text-center ">
                             <span>No more result</span>
