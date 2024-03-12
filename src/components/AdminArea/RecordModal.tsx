@@ -242,7 +242,7 @@ export const RecordModal: FC<Props> = function ({
                   onChange={(e) => {
                     setRecord({
                       ...record,
-                      seqNo: +e.target?.value,
+                      seqNo: +e.target.value,
                     });
                   }}
                   type="number"

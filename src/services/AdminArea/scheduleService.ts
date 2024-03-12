@@ -216,6 +216,7 @@ import type { Schedule } from "../../models/AdminArea/schedule/schedule";
 import * as httpRequest from "../../utils/httpRequest";
 import authHeader from "../../utils/authHeader";
 import type { ScheduleBus } from "../../models/AdminArea/schedule/scheduleBus";
+import { STORAGE } from "../../utils/configs/storage";
 // import type { ScheduleAPI } from "../../models/httpResponse";
 // import { toStringDate } from "../../utils/utilityFunctions";
 // import type { UserLogin } from "../models/AdminArea/user/user";
@@ -300,6 +301,8 @@ export const createSchedule = async (
   formData.append("departureTime", schedule.departureTime ?? "");
   formData.append("arrivalTime", schedule.arrivalTime ?? "");
   formData.append("date", schedule.date ?? "");
+  formData.append("createBy", STORAGE.SBA_USERID);
+  formData.append("updatedBy", STORAGE.SBA_USERID);
 
   const res = await httpRequest.post("schedules", formData, {
     headers: authHeader(),

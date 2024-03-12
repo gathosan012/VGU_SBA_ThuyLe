@@ -774,11 +774,29 @@ const MANAGE_SchedulePage: FC = () => {
                             </Table.Cell>
                             <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
                               {/* {value.code} */}
-                              {startStation}
+                              {
+                                  (
+                                    value as Schedule
+                                  ).route?.stations?.find(
+                                    (station) => station.stopOrder === 0
+                                  )?.station?.stationName
+                                }
                             </Table.Cell>
                             <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
                               {/* {value.code} */}
-                              {endStation}
+                              {
+                                  (
+                                    value as Schedule
+                                  ).route?.stations?.reduce(
+                                    (maxStop, currentStop) =>
+                                      currentStop.stopOrder &&
+                                      currentStop.stopOrder >
+                                        (maxStop.stopOrder ?? 0)
+                                        ? currentStop
+                                        : maxStop,
+                                    // value.route?.stations?.[0] // Initial max stop order
+                                  )?.station?.stationName
+                                }
                             </Table.Cell>
                             <Table.Cell>
                               <div className="flex items-center gap-x-2 whitespace-nowrap">

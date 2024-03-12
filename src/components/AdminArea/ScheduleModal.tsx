@@ -15,6 +15,10 @@ import {
   updateSchedule,
 } from "../../services/AdminArea/scheduleService";
 import { initSchedule } from "../../utils/configs/initialSchedule";
+import { TimeField } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
+import TimePicker from "react-time-picker";
+// import "react-time-picker/dist/react-time-picker.css";
 
 interface Props {
   type: string;
@@ -47,6 +51,15 @@ export const ScheduleModal: FC<Props> = function ({
         schedule.date
       )
         setIsValid(true);
+      else setIsValid(false);
+    } else {
+      if (
+        schedule.route?.id &&
+        schedule.departureTime &&
+        schedule.arrivalTime &&
+        schedule.date
+      )
+      setIsValid(true);
       else setIsValid(false);
     }
   };
@@ -188,48 +201,104 @@ export const ScheduleModal: FC<Props> = function ({
               </>
             )}
             <div>
-              <Label htmlFor="whMonth">Withholding month</Label>{" "}
+              <Label htmlFor="routeId">Route ID</Label>{" "}
               <span className="red-star"> *</span>
               <div className="mt-1">
-                <DatePicker
-                  selectsRange={true}
-                  // startDate={record.whMonthStart}
-                  // endDate={record.whMonthEnd}
+              <TextInput
+                  id="routeId"
+                  name="routeId"
+                  value={schedule.route?.id ?? ""}
 
-                  // onChange={(update) => {
-                  onChange={() => {
+                  // onChange={(e) => {
+                  onChange={(e) => {
                     setSchedule({
                       ...schedule,
-                      // whMonthStart: update[0]!,
-                      // whMonthEnd: update[1]!,
+                      route: {
+                        ...schedule.route,
+                        id: +e.target.value,
+                        routeName: schedule.route?.routeName ?? "",
+                        stations: schedule.route?.stations ?? [],
+                      },
                     });
                   }}
-                  isClearable={true}
-                  showYearDropdown
-                  showMonthDropdown
+                  type="number"
+                  pattern="[0-9]{1,7}"
+                  min="1"
+                  max="9999999"
+                  // disabled={type === TYPE.EDIT}
+                  title="only allow number input, up to 7 numbers."
                 />
               </div>
             </div>
             <div>
               {/* Published date */}
-              <Label htmlFor="publishedDate">Issue date</Label>{" "}
+              <Label htmlFor="departureTime">Departure Time</Label>{" "}
               <span className="red-star"> *</span>
-              <div className="mt-1">
+                <div className="mt-1">
                 <DatePicker
-                  // selected={record.publishedDate}
-
-                  // onChange={(date) =>
-                  onChange={() =>
-                    setSchedule({
-                      ...schedule,
-                      // publishedDate: date!,
-                    })
-                  }
-                  dateFormat="dd/MM/yyyy"
-                />
-              </div>
+                selected={schedule.departureTime ? new Date(schedule.departureTime) : null}
+                onChange={(date) =>
+                  setSchedule({
+                    ...schedule,
+                    departureTime: date ? date.toISOString() : null,
+                  })
+                }
+                dateFormat="dd/MM/yyyy"
+              />
+                </div>
             </div>
             <div>
+              {/* Published date */}
+              <Label htmlFor="arrivalTime">Arrival Time</Label>{" "}
+              <span className="red-star"> *</span>
+                <div className="mt-1">
+                <TimePicker
+                  onChange={(value) => {
+                    if (value) {
+                      const [hours, minutes] = value.split(':');
+                      const date = new Date(schedule.arrivalTime ?? "");
+                      date.setHours(parseInt(hours ?? "00"));
+                      date.setMinutes(parseInt(minutes ?? "00"));
+                      setSchedule({
+                        ...schedule,
+                        arrivalTime: date.toISOString(),
+                      });
+                    }
+                  }}
+                  value={schedule.arrivalTime ? new Date(schedule.arrivalTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }) : ''}
+                />
+                
+                {/* <DatePicker
+                selected={schedule.arrivalTime ? new Date(schedule.arrivalTime) : null}
+                onChange={(date) =>
+                  setSchedule({
+                    ...schedule,
+                    arrivalTime: date ? date.toISOString() : null,
+                  })
+                }
+                dateFormat="dd/MM/yyyy"
+              /> */}
+              
+                </div>
+            </div>
+            <div>
+              {/* Published date */}
+              <Label htmlFor="date">Date</Label>{" "}
+              <span className="red-star"> *</span>
+                <div className="mt-1">
+                <DatePicker
+                selected={schedule.date ? new Date(schedule.date) : null}
+                onChange={(date) =>
+                  setSchedule({
+                    ...schedule,
+                    date: date ? date.toISOString() : null,
+                  })
+                }
+                dateFormat="dd/MM/yyyy"
+              />
+                </div>
+            </div>
+            {/* <div>
               <Label htmlFor="seqNo">Sequence No.</Label>{" "}
               <span className="red-star"> *</span>
               <div className="mt-1">
@@ -253,8 +322,8 @@ export const ScheduleModal: FC<Props> = function ({
                   title="only allow number input, up to 7 numbers."
                 />
               </div>
-            </div>
-            <div>
+            </div> */}
+            {/* <div>
               <Label htmlFor="serialNo">Serial No.</Label>{" "}
               <span className="red-star"> *</span>
               <div className="mt-1">
@@ -276,8 +345,8 @@ export const ScheduleModal: FC<Props> = function ({
                   disabled={type === TYPE.EDIT}
                 />
               </div>
-            </div>
-            <div>
+            </div> */}
+            {/* <div>
               <Label htmlFor="formNo">Form No.</Label>{" "}
               <span className="red-star"> *</span>
               <div className="mt-1">
@@ -298,7 +367,7 @@ export const ScheduleModal: FC<Props> = function ({
                   title="Only allow alphabet, number and slash"
                 />
               </div>
-            </div>
+            </div> */}
           </div>
           <div>
             <Label className="mt-2" htmlFor="Description">
