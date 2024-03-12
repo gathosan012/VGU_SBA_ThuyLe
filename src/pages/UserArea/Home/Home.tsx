@@ -101,11 +101,11 @@ const HomePage: FC = () => {
     return (
         <AdminLayout isFooter={true}>
             <div className="relative">
-                <img src={HeroImage} alt="Hero"></img>
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-11/12 grid grid-cols-1 items-center justify-center px-4 pt-2">
-                    <div className="rounded border-t pt-8 bg-white border-gray-200 shadow-lg" title="search section">
-                        <div className="grid grid-cols-1 items-center lg:grid-cols-3 " title="input section">
-                            <div className="px-6 py-4">
+                <img src={HeroImage} alt="Hero" className="h-1/2 w-full object-cover"></img>
+                <div className="absolute pt-56 left-1/2 lg:top-1/2 grid w-11/12 -translate-x-1/2 -translate-y-1/2 transform grid-cols-1 items-center justify-center px-4 pt-2">
+                    <div className="rounded border-t border-gray-200 flex flex-col md:flex-col-2 justify-center items-center bg-white pt-8 shadow-lg" title="search section">
+                        <div className="grid grid-cols-1 w-2/3 lg:w-full justify-center items-center lg:grid-cols-3 " title="input section">
+                            <div className="px-6 py-4  flex justify-center items-center flex-grow">
                                 <CustomDropdown
                                     label="Departure stop"
                                     options={stations.map(st => st.stationName.valueOf())}
@@ -115,7 +115,7 @@ const HomePage: FC = () => {
                                 />
                             </div>
 
-                            <div className="px-6 py-4">
+                            <div className="px-6 py-4  flex justify-center items-center flex-grow">
                                 <CustomDropdown
                                     label="Arrival stop"
                                     options={stations.map(st => st.stationName.valueOf())}
@@ -125,16 +125,18 @@ const HomePage: FC = () => {
                                 />
                             </div>
 
-                            <div className="px-6 py-4">
+                            <div className="px-6 py-4 flex justify-center items-center flex-grow">
                                 <CustomDatePicker selectedDate={selectDate ? new Date(selectDate) : null} onChange={(date) => handleDateChange(date)} label="Date" />
                             </div>
                         </div>
-                        <div className="flex justify-center pt-2 pb-8">
+                        <div className="flex justify-center pb-8 pt-2">
                             <CustomButton content="Search" type="filled" onClick={(e) => Submit(e)} shape={""} />
                         </div>
                     </div>
                 </div>
+
             </div>
+            <div className="h-screen"></div>
         </AdminLayout>
     );
 };

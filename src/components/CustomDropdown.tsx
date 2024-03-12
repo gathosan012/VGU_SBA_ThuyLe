@@ -1,6 +1,6 @@
-import { FC, useState } from "react";
+import type { FC } from "react";
+import { useState, useRef, useEffect } from "react";
 import image from "../assets/images/arrowdown.svg";
-import { it } from "node:test";
 
 interface DropdownProps {
     label: string;
@@ -13,6 +13,7 @@ interface DropdownProps {
 const CustomDropdown: FC<DropdownProps> = function ({ label, options, value: initialValue, onChange, initial }) {
     const [isOpen, setIsOpen] = useState(false);
     const [value, setValue] = useState(initialValue || initial); // Initialize value with the first option or the provided value
+    const dropdownRef = useRef<HTMLDivElement>(null);
 
     const toggleDropdown = () => {
         setIsOpen(!isOpen);
@@ -24,10 +25,23 @@ const CustomDropdown: FC<DropdownProps> = function ({ label, options, value: ini
         setIsOpen(false); // Close the dropdown
     };
 
+    const handleClickOutside = (event: MouseEvent) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+            setIsOpen(false);
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
     return (
-        <div className="relative">
-            <div className=" rounded-full bg-[#F5821F] pl-6 pr-4 py-3 " onClick={toggleDropdown}>
-                <div className="flex justify-between">
+        <div className="relative w-full" ref={dropdownRef}>
+            <div className="rounded-full bg-[#F5821F] py-3 pl-4 pr-4" onClick={toggleDropdown}>
+                <div className="flex items-center justify-center">
                     <p className="shrink-0 font-medium text-white">{label}</p>
                     <p className="mx-2 truncate text-center font-semibold text-white">{value}</p> {/* Display the selected value */}
                     <img src={image} alt="arrow down" />
@@ -52,22 +66,3 @@ const CustomDropdown: FC<DropdownProps> = function ({ label, options, value: ini
 };
 
 export default CustomDropdown;
-
-
-// To use it
-// const [selectedOption, setSelectedOption] = useState('');
-
-//     const handleDropdownChange = (option) => {
-//         setSelectedOption(option);
-//     };
-
-//     return (
-//         <div>
-//             <CustomDropdown
-//                 label="Select Option"
-//                 options={["Option 1", "Option 2", "Option 3"]}
-//                 value={selectedOption}
-//                 onChange={handleDropdownChange}
-//             />
-//         </div>
-//     );
