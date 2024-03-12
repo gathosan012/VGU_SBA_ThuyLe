@@ -1,0 +1,7 @@
+.custom-datepicker-input::placeholder {
+    color: white; /* Set border color to transparent */
+}
+
+.custom-datepicker-input:focus {
+    border:none;
+}

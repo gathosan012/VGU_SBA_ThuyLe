@@ -14,7 +14,7 @@ function Footer() {
   });
 
   return (
-    <div className="text-slate-500 py-5 text-center opacity-70">
+    <div className="text-slate-500 py-5 text-center">
       <p className="dark:text-white">
         Looking for some help? Click the email icon below!
       </p>
