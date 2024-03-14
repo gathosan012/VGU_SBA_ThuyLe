@@ -1,5 +1,4 @@
 import type { Schedule } from "../models/UserArea/schedule";
-import type { Ticket } from "../models/UserArea/tickets";
 import authHeader from "../utils/authHeader";
 import httpRequest from "../utils/httpRequest";
 
