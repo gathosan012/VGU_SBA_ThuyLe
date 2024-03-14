@@ -15,7 +15,14 @@ import PaymentPage from "./pages/UserArea/Payment/Payment";
 import SchedulePage from "./pages/UserArea/Schedule/Schedule";
 import HistoryPage from "./pages/UserArea/History/History";
 import TicketDetailsPage from "./pages/UserArea/TicketDetails/TicketDetails";
-import MANAGE_SchedulePage from "./pages/AdminArea/Schedule/Schedule";
+import MANAGE_SchedulePage from "./pages/AdminArea/ManageSchedule/Schedule";
+import ManageBooking from "./pages/AdminArea/ManageBooking/ManageBooking";
+import ManageBus from "./pages/AdminArea/ManageBus/ManageBus";
+import ManageMember from "./pages/AdminArea/ManageMember/ManageMember";
+import ManageTicket from "./pages/AdminArea/ManageTicket/ManageTicket";
+import DashboardPage from "./pages/AdminArea/Dashboard";
+import ManageRoute from "./pages/AdminArea/ManageRoute/ManageRoute";
+import ChooseRoute from "./pages/UserArea/ChooseRoute/ChooseRoute";
 // import DashboardPage from "./pages/AdminArea/Dashboard";
 
 const container = document.getElementById("root");
@@ -43,9 +50,17 @@ root.render(
           <Route path={APPLICATION_URL.SCHEDULE_URL} element={<SchedulePage />} />
           <Route path={APPLICATION_URL.HISTORY_URL} element={<HistoryPage />} />
           <Route path={APPLICATION_URL.TICKETDETAILS_URL} element={<TicketDetailsPage />} />
-          <Route path={APPLICATION_URL.MANAGE_SCHEDULE_URL} element={<MANAGE_SchedulePage />} />
 
-          {/* Add more router here */}
+          <Route path={APPLICATION_URL.MANAGE_SCHEDULE_URL} element={<MANAGE_SchedulePage />} />
+          <Route path={APPLICATION_URL.MANAGE_BOOKING_URL} element={<ManageBooking />} />
+          <Route path={APPLICATION_URL.MANAGE_BUS_URL} element={<ManageBus />} />
+          <Route path={APPLICATION_URL.MANAGE_MEMBER_URL} element={<ManageMember />} />
+          <Route path={APPLICATION_URL.MANAGE_TICKET_URL} element={<ManageTicket />} />
+          <Route path={APPLICATION_URL.DASHBOARD_URL} element={<DashboardPage />} />
+          <Route path={APPLICATION_URL.MANAGE_ROUTE_URL} element={<ManageRoute />} />
+          <Route path={APPLICATION_URL.CHOOSE_ROUTE_URL} element={<ChooseRoute />} />
+
+
         </Route>
       </Routes>
     </BrowserRouter>

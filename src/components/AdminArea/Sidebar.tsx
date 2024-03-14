@@ -2,6 +2,7 @@ import { Sidebar } from "flowbite-react";
 import type { FC } from "react";
 import { useEffect, useState } from "react";
 import { navigationData } from "../../utils/configs/routes/navigationData";
+import ProgressBar from "../ProgressBar";
 
 interface Props {
   isMobile: boolean;
@@ -40,22 +41,27 @@ const CustomSidebar: FC<Props> = function ({ isMobile }) {
                 <button className="inline-flex items-center rounded px-4 py-2 font-semibold text-gray-700 dark:text-gray-300" onClick={handleUserDropdownToggle}>
                   User
                 </button>
-                {userDropdownOpen && <div className="mr-12 mt-2 w-48 rounded-lg bg-white py-2">
+                {userDropdownOpen && <div className="mr-12 mt-2 w-64 rounded-lg bg-white py-2">
                   {userNavigation.map((navigation, index) => (
                     <Sidebar.Item
                       key={index}
                       href={navigation.url}
-                      icon={navigation.icon}
                       className={
                         navigation.url === currentPage
                           ? "bg-gray-100 dark:bg-gray-700"
                           : ""
                       }
                     >
-                      {isMobile ? "" : navigation.title}
+                      <div className="flex gap-2">
+                        <img src={navigation.src} alt={navigation.title} className="size-6 text-white" />
+                        {isMobile ? "" : navigation.title}
+                      </div>
                     </Sidebar.Item>
+
                   ))}
+                  <ProgressBar currentPage={currentPage} />
                 </div>}
+
               </div>
 
               {/* Render admin navigation */}
@@ -68,14 +74,16 @@ const CustomSidebar: FC<Props> = function ({ isMobile }) {
                     <Sidebar.Item
                       key={index}
                       href={navigation.url}
-                      icon={navigation.icon}
                       className={
                         navigation.url === currentPage
                           ? "bg-gray-100 dark:bg-gray-700"
                           : ""
                       }
                     >
-                      {isMobile ? "" : navigation.title}
+                      <div className="flex gap-2">
+                        <img src={navigation.src} alt={navigation.title} className="size-6 text-white" />
+                        {isMobile ? "" : navigation.title}
+                      </div>
                     </Sidebar.Item>
                   ))}
                 </div>}
