@@ -2,7 +2,7 @@ import type { FC, FormEvent } from "react";
 
 interface ButtonProps {
     disabled?: boolean;
-    shape: 'rounded' | '';
+    shape?: 'rounded' | '';
     type?: "outlined" | "filled";
     content: string;
     onNavbar?: boolean;

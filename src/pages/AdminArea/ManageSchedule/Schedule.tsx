@@ -89,41 +89,43 @@ import {
 
 import { HiPaperAirplane } from "react-icons/hi2";
 
-import AdminLayout from "../../layouts/Layout";
-import { ScheduleModal } from "../../components/AdminArea/ScheduleModal";
-import { ScheduleBusModal } from "../../components/AdminArea/ScheduleBusModal";
+import AdminLayout from "../../../layouts/Layout";
+import { ScheduleModal } from "../../../components/AdminArea/ScheduleModal";
+import { ScheduleBusModal } from "../../../components/AdminArea/ScheduleBusModal";
 // import { type Record } from "../../models/record";
 // import { HttpResponse } from "../../models/httpResponse";
 import {
   fetchRoundPageNumber,
   getAllSchedule,
   searchSchedulePagination,
-} from "../../services/AdminArea/scheduleService";
+} from "../../../services/AdminArea/scheduleService";
 
 // eslint-disable-next-line no-unused-vars
 import { Loading, Notify } from "notiflix";
 // import { toStringDate, toStringTime } from "../../utils/utilityFunctions";
 
-import type { Schedule } from "../../models/AdminArea/schedule/schedule";
-import { initSchedule } from "../../utils/configs/initialSchedule";
-import type { ScheduleBus } from "../../models/AdminArea/schedule/scheduleBus";
-import { initScheduleBus } from "../../utils/configs/initialScheduleBus";
+import type { Schedule } from "../../../models/AdminArea/schedule/schedule";
+import { initSchedule } from "../../../utils/configs/initialSchedule";
+import type { ScheduleBus } from "../../../models/AdminArea/schedule/scheduleBus";
+import { initScheduleBus } from "../../../utils/configs/initialScheduleBus";
 
 // import { resendEmail } from "../../services/mailService";
 
 // import { NOTIFY } from "../../utils/configs/notify";
 
 // import { RES_CODE, STATUS_CODE } from "../../utils/configs/statusCode";
-import { TYPE } from "../../utils/configs/type";
-import { APPLICATION_URL } from "../../utils/configs/routes/applicationUrl";
-import type { Station } from "../../models/AdminArea/station/station";
-import httpRequest from "../../utils/httpRequest";
-import authHeader from "../../utils/authHeader";
-import { HttpResponse } from "../../models/httpResponse";
-import type { Stations } from "../../models/AdminArea/station/stations/stations";
-import { getAllStation } from "../../services/AdminArea/stationService";
-import { initStation } from "../../utils/configs/initialStation";
-import { getAllScheduleBus } from "../../services/AdminArea/scheduleBusService";
+import { TYPE } from "../../../utils/configs/type";
+import { APPLICATION_URL } from "../../../utils/configs/routes/applicationUrl";
+import type { Station } from "../../../models/AdminArea/station/station";
+import httpRequest from "../../../utils/httpRequest";
+import authHeader from "../../../utils/authHeader";
+import { HttpResponse } from "../../../models/httpResponse";
+import type { Stations } from "../../../models/AdminArea/station/stations/stations";
+import { getAllStation } from "../../../services/AdminArea/stationService";
+import { initStation } from "../../../utils/configs/initialStation";
+import { getAllScheduleBus } from "../../../services/AdminArea/scheduleBusService";
+import CustomDropdown from "../../../components/CustomDropdown";
+import CustomDatePicker from "../../../components/CustomCalendar";
 
 const MANAGE_SchedulePage: FC = () => {
   const [date, setDate] = useState<string>("");
@@ -147,30 +149,156 @@ const MANAGE_SchedulePage: FC = () => {
   const [isCompleted, setIsCompleted] = useState<boolean>(false); // track on create success
   // end of modal
 
-  const [searchResultSchedule, setSearchResultSchedule] = useState<Schedule[]>(
+  const [searchResultSchedule, setSearchResultSchedule] = useState<Schedule[] | ScheduleBus[]>(
     []
   );
 
   const [getAllScheduleBusData, setGetAllScheduleBusData] = useState<
     ScheduleBus[]
   >([]);
+  
 
-  const [stationNames, setStationNames] = useState<string[]>([]);
-  const [stationIds, setStationIds] = useState<number[]>([]);
+  // Not Filter
+  /* useEffect(() => {
+    const getStationData = async () => {
+      try {
+        const res = await getAllStation();
+        if (res.status === 200) {
+          console.log("res.data: ", res.data);
+          if (Array.isArray(res.data)) {
+            const stations = res.data;
+            const names = stations.map(station => station.stationName);
+            const ids = stations.map(station => station.id);
+            console.log("stationName: ", names);
+            console.log("stationId: ", ids);
+            setStationNames(names);
+            setStationIds(ids);
+          }
+        }
+      } catch (error) {
+        console.error("An error occurred when fetching station names:", error);
+      }
+    };
 
+    getStationData();
+  }, []);
+
+  const handleDropdownChange = (stationName: string, type: "start" | "end") => {
+    console.log(`${type} station selected:`, stationName);
+
+    // Find the index of the selected station name in the station names array
+    const stationIndex = stationNames.indexOf(stationName);
+
+    // If the station is found, update the corresponding state variables
+    if (stationIndex !== -1) {
+      const stationId = stationIds[stationIndex] ?? null; // Ensure stationId is of type number | null
+
+      if (type === "start") {
+        // Handle start station logic
+        console.log("Handling start station logic");
+        console.log(`${type} station ID:`, stationId);
+        setStartStation(stationName);
+        setStartStationId(stationId);
+      } else {
+        console.log("Handling end station logic");
+        console.log(`${type} station ID:`, stationId);
+        setEndStation(stationName);
+        setEndStationId(stationId);
+      }
+    }
+  }; */
+
+  useEffect(() => {
+    const fetchDataForFilteringStationsArray = async () => {
+      try {
+        const res = await getAllStation();
+  
+        if (res.status === 200) {
+          // Assuming res.data is an array of Station objects
+          const stationsData: Station[] = Array.isArray(res.data) ? res.data : [res.data];
+  
+          // Filter the stations array
+          const filteredStations = stationsData.filter(
+            (station: Station) =>
+              station.stationName !== endStation &&
+              station.stationName !== startStation
+          );
+
+          console.log("Filtered Stations Array:", filteredStations);
+
+           // Extract station names and ids from the filtered stations
+          const filteredStationNames = filteredStations
+            .map((station: Station) => station.stationName)
+            .filter((name) => name !== null) as string[];
+
+          const filteredStationIds = filteredStations
+            .map((station: Station) => station.id)
+            .filter((id) => id !== null) as number[];
+
+          console.log("stationName in Filtered Stations Array:", filteredStationIds);
+          console.log("stationId in Filtered Stations Array:", filteredStationIds);
+  
+          // Update station names and ids states
+          setStationNames(filteredStationNames);
+          setStationIds(filteredStationIds);
+        } else {
+          console.error("Failed to fetch data for filtering stations array:", res);
+        }
+      } catch (error) {
+        console.error(
+          "An error occurred when fetching data for filtering stations array:",
+          error
+        );
+      }
+    };
+  
+    fetchDataForFilteringStationsArray();
+  }, [startStation, endStation]);
+
+  const handleDropdownChange = (stationName: string, type: "start" | "end") => {
+    console.log(`${type} station selected:`, stationName);
+  
+    // Find the index of the selected station name in the filtered station names array
+    const stationIndex = stationNames.indexOf(stationName);
+  
+    // If the station is found, update the corresponding state variables
+    if (stationIndex !== -1) {
+      const stationId = stationIds[stationIndex] ?? null; // Ensure stationId is of type number | null
+  
+      if (type === "start") {
+        // Handle start station logic
+        console.log("Handling start station logic");
+        console.log(`${type} station ID:`, stationId);
+        setStartStation(stationName);
+        setStartStationId(stationId);
+      } else {
+        console.log("Handling end station logic");
+        console.log(`${type} station ID:`, stationId);
+        setEndStation(stationName);
+        setEndStationId(stationId);
+      }
+    }
+  };
+  
+  
+  
+  const [selectedDatePicker, setSelectedDatePicker] = useState<string>("");
   const handleDateChange = (date: Date | null) => {
     if (date) {
       const year = date.getFullYear().toString();
-      const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Month is 0-indexed
+      const month = (date.getMonth() + 1).toString().padStart(2, "0");
       const day = date.getDate().toString().padStart(2, "0");
       const formattedDate = `${year}-${month}-${day}`;
-      setSelectedDate(formattedDate);
+      setSelectedDatePicker(formattedDate);
       console.log("Selected Date:", formattedDate);
     } else {
-      setSelectedDate(null);
+      setSelectedDatePicker("");
       console.log("No date selected");
     }
   };
+
+  const [stationNames, setStationNames] = useState<string[]>([]);
+  const [stationIds, setStationIds] = useState<number[]>([]);
 
   // pagination
   const LIMIT = 10;
@@ -185,14 +313,28 @@ const MANAGE_SchedulePage: FC = () => {
 
   const Submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // convert into filter
+  
+    console.log("Start Station ID:", startStationId);
+    console.log("End Station ID:", endStationId);
+  
     if (startStationId !== null && endStationId !== null) {
-      searchSchedule(startStationId, endStationId, date);
+      console.log("Both start and end stations are selected.");
+  
+      if (selectedDatePicker) {
+        console.log("Selected Date:", selectedDatePicker);
+        // Call searchSchedule with the correct parameters
+        searchSchedule(startStationId, endStationId, selectedDatePicker);
+      } else {
+        console.log("Please select a date.");
+      }
+    } else {
+      console.log("Please select both start and end stations.");
     }
   };
 
+  // fetch station Names
   useEffect(() => {
-    const fetchStationNames = async () => {
+    const fetchStationNamesAndIds = async () => {
       try {
         const res = await getAllStation();
         if (res.status === 200) {
@@ -204,8 +346,8 @@ const MANAGE_SchedulePage: FC = () => {
             const stationId: number[] = res.data.flatMap(
               (station: Station) => station.id ?? 0
             );
-            // console.log("stationName: ", stationName);
-            // console.log("stationId: ", stationId);
+            console.log("stationName: ", stationName);
+            console.log("stationId: ", stationId);
             setStationNames(stationName);
             setStationIds(stationId);
             setStations(res.data);
@@ -220,7 +362,7 @@ const MANAGE_SchedulePage: FC = () => {
       }
     };
 
-    fetchStationNames();
+    fetchStationNamesAndIds();
   }, []);
 
   // Fetch all schedule data
@@ -264,7 +406,7 @@ const MANAGE_SchedulePage: FC = () => {
         searchString ?? null
       );
       if (res.status === 200) {
-        setSearchResultSchedule(res.data as Schedule[]);
+        setSearchResultSchedule(res.data as Schedule[] | ScheduleBus[]);
         const totalSchedule = res.data.length;
         /* ---------------------------------------------- round page number logic --------------------------------------------- */
         // 50 / 10 = 5
@@ -363,49 +505,7 @@ const MANAGE_SchedulePage: FC = () => {
     console.log("stationId Array:", stationIds);
   }, [startStation, endStation, stations, stationNames, stationIds]); */
 
-  useEffect(() => {
-    const fetchAllScheduleBuses = async () => {
-      try {
-        const res = await getAllScheduleBus();
-
-        if (res.status === 200) {
-          // Assuming res.data is an array of Station objects
-          const scheduleBusData: ScheduleBus[] = Array.isArray(res.data)
-            ? res.data
-            : [res.data];
-
-          console.log("scheduleBusData Array:", scheduleBusData);
-
-          const busNumber = scheduleBusData.map(
-            (scheduleBus: ScheduleBus) => scheduleBus.bus?.busNumber
-          );
-
-          const driverFullName = scheduleBusData.map(
-            (scheduleBus: ScheduleBus) => scheduleBus.driver?.fullname ?? "N/A"
-          );
-
-          const seatCapacity = scheduleBusData.map(
-            (scheduleBus: ScheduleBus) => scheduleBus.leftSeats
-          );
-
-          console.log("busNumber Array:", busNumber);
-          console.log("driverFullName Array:", driverFullName);
-          console.log("seatCapacity Array:", seatCapacity);
-        } else {
-          console.error("Failed to fetch data for scheduleBusData array:", res);
-        }
-      } catch (error) {
-        console.error(
-          "An error occurred when fetching data for filtering stations array:",
-          error
-        );
-      }
-    };
-
-    fetchAllScheduleBuses();
-  }, []);
-
-  useEffect(() => {
+  /* useEffect(() => {
     const fetchDataForFilteringStationsArray = async () => {
       try {
         const res = await getAllStation();
@@ -458,12 +558,42 @@ const MANAGE_SchedulePage: FC = () => {
         const res = await getAllScheduleBus();
 
         if (res.status === 200) {
-          // Assuming res.data is an array of ScheduleBus objects
           const scheduleBusData = Array.isArray(res.data)
             ? res.data
             : [res.data];
-
           console.log("scheduleBusData:", scheduleBusData);
+
+          if (scheduleBusData.length > 0) {
+            scheduleBusData.forEach((scheduleBus: ScheduleBus) => {
+              // Find departure stop
+              const departureStop = scheduleBus.schedule?.route?.stations?.find(
+                (station) => station.stopOrder === 0
+              )?.station?.stationName;
+
+              // Find arrival stop
+              const arrivalStop = scheduleBus.schedule?.route?.stations?.reduce(
+                (maxStop, currentStop) =>
+                  currentStop.stopOrder &&
+                  currentStop.stopOrder > (maxStop?.stopOrder ?? 0)
+                    ? currentStop
+                    : maxStop,
+                scheduleBus.schedule.route.stations[0] // Initial max stop order
+              )?.station?.stationName;
+
+              console.log(
+                `Departure Stop for Schedule Bus ${scheduleBus.id}:`,
+                departureStop
+              );
+              console.log(
+                `Arrival Stop for Schedule Bus ${scheduleBus.id}:`,
+                arrivalStop
+              );
+
+              // Update state with the found departure and arrival stops
+              setDepartureStop(departureStop ?? "");
+              setArrivalStop(arrivalStop ?? "");
+            });
+          }
         }
       } catch (error) {
         console.error(
@@ -474,7 +604,7 @@ const MANAGE_SchedulePage: FC = () => {
     };
 
     fetchDataForDepartureAndArrivalStop();
-  }, []);
+  }, []); */
 
   function formatDate(dateString: string | undefined): string {
     if (!dateString) return ""; // Return empty string if dateString is null or undefined
@@ -490,117 +620,45 @@ const MANAGE_SchedulePage: FC = () => {
           <div className="mb-1 w-full">
             <div className="sm:flex">
               <div className="mb-3 items-center dark:divide-gray-700 sm:mb-0 sm:flex sm:divide-x sm:divide-gray-100">
-                <form className="lg:pr-3" onSubmit={(e) => Submit(e)}>
-                  <div className="relative mt-1 lg:w-64 xl:w-96">
-                    <div
-                      style={{
-                        border: "1px solid #ccc",
-                        borderRadius: "4px",
-                        padding: "8px",
-                      }}
-                    >
-                      <Dropdown
-                        label={
-                          startStation ? `${startStation}` : "Start Station"
-                        }
-                        inline
-                        name="users-search"
+                <form className="flex justify-center lg:pr-3" onSubmit={Submit}>
+                  <div className="relative z-10 mt-1 flex items-center lg:w-64 xl:w-96">
+                    <div className="mr-2">
+                      <CustomDropdown
+                        label="Start Station"
+                        options={stationNames}
                         value={startStation}
-                      >
-                        {stations
-                          .filter(
-                            (station) =>
-                              station.stationName !== endStation &&
-                              station.stationName !== startStation
-                          )
-                          .map((station, index) => (
-                            <Dropdown.Item
-                              key={index}
-                              onClick={() => {
-                                console.log(
-                                  `Selected Start Station: ${station.stationName} with stationId: ${station.id}`
-                                );
-                                setStartStation(station.stationName ?? "");
-                                setStartStationId(station.id);
-                              }}
-                            >
-                              {station.stationName}
-                            </Dropdown.Item>
-                          ))}
-                      </Dropdown>
-                    </div>
-                    <div
-                      style={{
-                        border: "1px solid #ccc",
-                        borderRadius: "4px",
-                        padding: "8px",
-                      }}
-                    >
-                      <Dropdown
-                        label={endStation ? `${endStation}` : "End Station"}
-                        inline
-                        name="users-search"
-                        value={endStation}
-                      >
-                        {stations
-                          .filter(
-                            (station) =>
-                              station.stationName !== startStation &&
-                              station.stationName !== endStation
-                          )
-                          .map((station, index) => (
-                            <Dropdown.Item
-                              key={index}
-                              onClick={() => {
-                                console.log(
-                                  `Selected Start Station: ${station.stationName} with stationId: ${station.id}`
-                                );
-                                setEndStation(station.stationName ?? "");
-                                setEndStationId(station.id);
-                              }}
-                            >
-                              {station.stationName}
-                            </Dropdown.Item>
-                          ))}
-                      </Dropdown>
-                    </div>
-                    {/* <TextInput
-                      id="users-search"
-                      name="users-search"
-                      placeholder="Select date..."
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                    /> */}
-                    <div>
-                      <ReactDatePicker
-                        selected={selectedDate ? new Date(selectedDate) : null}
-                        onChange={(date) => {
-                          if (date instanceof Date && !isNaN(date.getTime())) {
-                            // Check if 'date' is a valid Date object
-                            const year = date.getFullYear();
-                            const month = String(date.getMonth() + 1).padStart(
-                              2,
-                              "0"
-                            );
-                            const day = String(date.getDate()).padStart(2, "0");
-                            const formattedDate = `${year}-${month}-${day}`;
-                            console.log("Formatted Date:", formattedDate);
-                            console.log("date:", date);
-                            setDate(formattedDate);
-                            handleDateChange(date);
-                          }
-                        }}
-                        placeholderText="Select date..."
-                        dateFormat="yyyy-MM-dd"
-                        title="Flowbite Datepicker"
+                        onChange={(startStationName) =>
+                          handleDropdownChange(startStationName, "start")
+                        }
                       />
                     </div>
-                    <button
-                      type="submit"
-                      className="absolute inset-y-0 right-0 flex items-center pr-2"
-                    >
-                      <HiSearch />
-                    </button>
+                    <div className="mr-2">
+                      <CustomDropdown
+                        label="End Station"
+                        options={stationNames}
+                        value={endStation}
+                        onChange={(endStationName) =>
+                          handleDropdownChange(endStationName, "end")
+                        }
+                      />
+                    </div>
+                    <div className="mr-2">
+                      <CustomDatePicker
+                        label="Select Date"
+                        selectedDate={selectedDatePicker}
+                        onChange={(date: string) =>
+                          handleDateChange(date ? new Date(date) : null)
+                        }
+                      />
+                    </div>
+                    <div className="relative mt-1 lg:w-64 xl:w-96">
+                      <button
+                        type="submit"
+                        className="absolute inset-y-0 right-0 flex items-center pr-2"
+                      >
+                        <HiSearch />
+                      </button>
+                    </div>
                   </div>
                 </form>
               </div>
@@ -666,9 +724,45 @@ const MANAGE_SchedulePage: FC = () => {
                             <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
                               {index + 1}
                             </Table.Cell>
+                            {/* value as ScheduleBus &&
+                              getAllScheduleBusData.map((scheduleBus) => (
+                                <React.Fragment key={scheduleBus.schedule?.route?.id}>
+                                  <Table.Cell className="whitespace-nowrap text-base font-medium text-gray-900 dark:text-white">
+                                    {scheduleBus.bus?.busNumber}
+                                  </Table.Cell>
+                                  <Table.Cell className="whitespace-nowrap text-base font-medium text-gray-900 dark:text-white">
+                                    {scheduleBus.driver?.fullname ?? "N/A"}
+                                  </Table.Cell>
+                                  <Table.Cell className="whitespace-nowrap text-base font-medium text-gray-900 dark:text-white">
+                                    {scheduleBus.bus?.capacity}
+                                  </Table.Cell>
+                                </React.Fragment>
+                              ))} */}
+
+                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                              {/* {value.formNo} */}
+                              {null}
+                            </Table.Cell>
+                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                              {/* {value.formNo} */}
+                              {null}
+                            </Table.Cell>
+                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                              {/* {value.formNo} */}
+                              {null}
+                            </Table.Cell>
+
                             <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
                               {/* {value.serialNo} */}
                               {(value as Schedule).route?.routeName}
+                            </Table.Cell>
+                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                              {/* {value.formNo} */}
+                              {(value as Schedule).route?.id}
+                            </Table.Cell>
+                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                              {/* {value.formNo} */}
+                              {(value as Schedule).date}
                             </Table.Cell>
                             <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
                               {/* {value.formNo} */}
@@ -677,6 +771,32 @@ const MANAGE_SchedulePage: FC = () => {
                             <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
                               {/* {value.code} */}
                               {(value as Schedule).arrivalTime}
+                            </Table.Cell>
+                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                              {/* {value.code} */}
+                              {
+                                  (
+                                    value as Schedule
+                                  ).route?.stations?.find(
+                                    (station) => station.stopOrder === 0
+                                  )?.station?.stationName
+                                }
+                            </Table.Cell>
+                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                              {/* {value.code} */}
+                              {
+                                  (
+                                    value as Schedule
+                                  ).route?.stations?.reduce(
+                                    (maxStop, currentStop) =>
+                                      currentStop.stopOrder &&
+                                      currentStop.stopOrder >
+                                        (maxStop.stopOrder ?? 0)
+                                        ? currentStop
+                                        : maxStop,
+                                    // value.route?.stations?.[0] // Initial max stop order
+                                  )?.station?.stationName
+                                }
                             </Table.Cell>
                             <Table.Cell>
                               <div className="flex items-center gap-x-2 whitespace-nowrap">
@@ -746,84 +866,100 @@ const MANAGE_SchedulePage: FC = () => {
                           </Table.Row>
                         ))
                         : getAllScheduleBusData.map((value, index) => (
-                          <Table.Row
-                            key={index}
-                            className="hover:bg-gray-100 dark:hover:bg-gray-700"
-                          >
-                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
-                              {index + 1}
-                            </Table.Cell>
-                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
-                              {(value as ScheduleBus).bus?.busNumber}
-                            </Table.Cell>
-                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
-                              {/* {value.serialNo} */}
-                              {(value as ScheduleBus).driver?.fullname ??
-                                "N/A"}
-                            </Table.Cell>
-                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
-                              {/* {value.serialNo} */}
-                              {(value as ScheduleBus).bus?.capacity}
-                            </Table.Cell>
-                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
-                              {
-                                (value as ScheduleBus).schedule?.route
-                                  ?.routeName
-                              }
-                            </Table.Cell>
-                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
-                              {/* {value.serialNo} */}
-                              {(value as ScheduleBus).schedule?.route?.id}
-                            </Table.Cell>
-                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
-                              {/* {value.code} */}
-                              {formatDate(
-                                (value as ScheduleBus).schedule?.date ?? ""
-                              )}
-                            </Table.Cell>
-                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
-                              {(value as ScheduleBus).schedule?.departureTime}
-                            </Table.Cell>
-                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
-                              {/* {value.code} */}
-                              {(value as ScheduleBus).schedule?.arrivalTime}
-                            </Table.Cell>
-                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
-                              {departureStop}
-                            </Table.Cell>
-                            <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
-                              {arrivalStop}
-                            </Table.Cell>
-                            <Table.Cell>
-                              <div className="flex items-center gap-x-2 whitespace-nowrap">
-                                <Tooltip content="Resend email">
-                                  <button
-                                  // onClick={() => handleResendEmail(value)}
-                                  >
-                                    <HiPaperAirplane className="action-btn text-xl" />
-                                  </button>
-                                </Tooltip>
-                                <Tooltip content="Edit">
-                                  <button
-                                    onClick={() => {
-                                      setIsOpen(true);
-                                      setType(TYPE.EDIT);
-                                      setSchedule({
-                                        ...value,
-                                        route: null,
-                                        departureTime: null,
-                                        arrivalTime: null,
-                                        date: null,
-                                      });
-                                    }}
-                                  /* disabled={
-                                  value.status === STATUS_CODE.DEACTIVE
-                                } */
-                                  >
-                                    <HiPencil className="action-btn text-xl" />
-                                  </button>
-                                </Tooltip>
-
+                            <Table.Row
+                              key={index}
+                              className="hover:bg-gray-100 dark:hover:bg-gray-700"
+                            >
+                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                                {index + 1}
+                              </Table.Cell>
+                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                                {(value as ScheduleBus).bus?.busNumber}
+                              </Table.Cell>
+                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                                {/* {value.serialNo} */}
+                                {(value as ScheduleBus).driver?.fullname ??
+                                  "N/A"}
+                              </Table.Cell>
+                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                                {/* {value.serialNo} */}
+                                {(value as ScheduleBus).bus?.capacity}
+                              </Table.Cell>
+                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                                {
+                                  (value as ScheduleBus).schedule?.route
+                                    ?.routeName
+                                }
+                              </Table.Cell>
+                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                                {/* {value.serialNo} */}
+                                {(value as ScheduleBus).schedule?.route?.id}
+                              </Table.Cell>
+                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                                {/* {value.code} */}
+                                {formatDate(
+                                  (value as ScheduleBus).schedule?.date ?? ""
+                                )}
+                              </Table.Cell>
+                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                                {(value as ScheduleBus).schedule?.departureTime}
+                              </Table.Cell>
+                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                                {(value as ScheduleBus).schedule?.arrivalTime}
+                              </Table.Cell>
+                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                                {
+                                  (
+                                    value as ScheduleBus
+                                  ).schedule?.route?.stations?.find(
+                                    (station) => station.stopOrder === 0
+                                  )?.station?.stationName
+                                }
+                              </Table.Cell>
+                              <Table.Cell className="whitespace-nowrap  text-base font-medium text-gray-900 dark:text-white">
+                                {
+                                  (
+                                    value as ScheduleBus
+                                  ).schedule?.route?.stations?.reduce(
+                                    (maxStop, currentStop) =>
+                                      currentStop.stopOrder &&
+                                      currentStop.stopOrder >
+                                        (maxStop?.stopOrder ?? 0)
+                                        ? currentStop
+                                        : maxStop,
+                                    value.schedule?.route?.stations?.[0] // Initial max stop order
+                                  )?.station?.stationName
+                                }
+                              </Table.Cell>
+                              <Table.Cell>
+                                <div className="flex items-center gap-x-2 whitespace-nowrap">
+                                  <Tooltip content="Resend email">
+                                    <button
+                                    // onClick={() => handleResendEmail(value)}
+                                    >
+                                      <HiPaperAirplane className="action-btn text-xl" />
+                                    </button>
+                                  </Tooltip>
+                                  <Tooltip content="Edit">
+                                    <button
+                                      onClick={() => {
+                                        setIsOpen(true);
+                                        setType(TYPE.EDIT);
+                                        setSchedule({
+                                          ...value,
+                                          route: null,
+                                          departureTime: null,
+                                          arrivalTime: null,
+                                          date: null,
+                                        });
+                                      }}
+                                      /* disabled={
+                                      value.status === STATUS_CODE.DEACTIVE
+                                    } */
+                                    >
+                                      <HiPencil className="action-btn text-xl" />
+                                    </button>
+                                  </Tooltip>
                                 {/* <Tooltip content="Publish">
                                   <button
                                   // disabled={
@@ -894,4 +1030,5 @@ const MANAGE_SchedulePage: FC = () => {
     </AdminLayout>
   );
 };
+
 export default MANAGE_SchedulePage;

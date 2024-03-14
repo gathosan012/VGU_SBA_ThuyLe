@@ -1,16 +1,14 @@
 import type { FC, FormEvent } from "react";
 import { useEffect, useState } from "react";
 import AdminLayout from "../../../layouts/Layout";
-import { Label } from "flowbite-react";
 import { getStation } from "../../../services/stationService";
 import type { Station } from "../../../models/UserArea/station"
 import { getTickets, searchTicketPagination } from "../../../services/ticketsService";
 import type { Ticket } from "../../../models/UserArea/tickets";
-import { Link } from "react-router-dom";
-import ReactDatePicker from "react-datepicker";
-import { Loading } from "notiflix";
-import images from "../../../assets/images/1.jpg";
+import HeroImage from "../../../assets/images/HeroImage.png";
 import CustomButton from "../../../components/CustomButton";
+import CustomDropdown from "../../../components/CustomDropdown";
+import CustomDatePicker from "../../../components/CustomDatePicker/CustomDatePicker";
 
 
 const HomePage: FC = () => {
@@ -25,12 +23,15 @@ const HomePage: FC = () => {
     const [searchResult, setSearchResult] = useState<Ticket[]>([])
     const [selectDate, setSelectDate] = useState<string>()
 
-    const handleChange = (s: string) => {
-        setStart(s)
-    }
-    const handleChanges = (e: string) => {
-        setEnd(e)
-    }
+    const handleStartChange = (value: string) => {
+        setStart(value);
+        setStartID(+value); // Convert to number
+    };
+
+    const handleEndChange = (value: string) => {
+        setEnd(value);
+        setEndID(+value); // Convert to number
+    };
 
     const handleDateChange = (date: Date | null) => {
         if (date) {
@@ -99,113 +100,45 @@ const HomePage: FC = () => {
 
     return (
         <AdminLayout isFooter={true}>
-            <div className="px-4 pt-2">
-                <div className=" rounded border-t border-gray-200 shadow-lg">
-                    <form onSubmit={(e) => Submit(e)}>
-                        <div className="grid grid-cols-1 gap-x-5 gap-y-8 overflow-hidden lg:grid-cols-3">
-                            <div className="px-6 py-4">
-                                <Label htmlFor="start">Search your start</Label>
-                                <select id="start" name="start" className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400"
+            <div className="relative">
+                <img src={HeroImage} alt="Hero" className="h-1/2 w-full object-cover"></img>
+                <div className="absolute pt-56 left-1/2 lg:top-1/2 grid w-11/12 -translate-x-1/2 -translate-y-1/2 transform grid-cols-1 items-center justify-center px-4 pt-2">
+                    <div className="rounded border-t border-gray-200 flex flex-col md:flex-col-2 justify-center items-center bg-white pt-8 shadow-lg" title="search section">
+                        <div className="grid grid-cols-1 w-2/3 lg:w-full justify-center items-center lg:grid-cols-3 " title="input section">
+                            <div className="px-6 py-4  flex justify-center items-center flex-grow">
+                                <CustomDropdown
+                                    label="Departure stop"
+                                    options={stations.map(st => st.stationName.valueOf())}
                                     value={start}
-                                    onChange={(s) => {handleChange(s.target.value); setStartID(+s.target.value);}}>
-                                    <option selected>Choose your start </option>
-                                    {
-                                        stations.map((st,id) => {
-                                            return(
-                                                <option key={id} value={st.id} >{st.stationName}</option>
-                                            )
-                                        })
-                                    }
-                                </select>
+                                    onChange={handleStartChange}
+                                    initial="Choose your start"
+                                />
                             </div>
 
-                            <div className="px-6 py-4">
-                                <Label htmlFor="start">Search your destination</Label>
-                                <select id="destination" name="end" className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400"
+                            <div className="px-6 py-4  flex justify-center items-center flex-grow">
+                                <CustomDropdown
+                                    label="Arrival stop"
+                                    options={stations.map(st => st.stationName.valueOf())}
                                     value={end}
-                                    onChange={e => {handleChanges(e.target.value); setEndID(+e.target.value)}}>
-                                    <option selected>Choose your destination </option>
-                                    {
-                                        stations.map((dx, id) => {
-                                            return(
-                                                <option key={id} value={dx.id} >{dx.stationName}</option>
-                                            )
-                                        })
-                                    }
-                                </select>
+                                    onChange={handleEndChange}
+                                    initial="Choose your end"
+                                />
                             </div>
 
-                            <div className="px-6 py-4">
-                                <Label htmlFor="date"> Search your date</Label>
-                                <div>
-                                    <ReactDatePicker selected={selectDate ? new Date(selectDate) : null} onChange={(date) => handleDateChange(date) } dateFormat="yyyy-MM-dd" title="Flowbite Datepicker" className=" rounded-md" /> 
-                                
-                                </div>
+                            <div className="px-6 py-4 flex justify-center items-center flex-grow">
+                                <CustomDatePicker selectedDate={selectDate ? new Date(selectDate) : null} onChange={(date) => handleDateChange(date)} label="Date" />
                             </div>
                         </div>
-                    
-                        <div className="flex justify-center p-2">
-                        <CustomButton content="Search" type="filled" onClick={(e) => Submit(e)} shape={""} />
-                        </div>
-                    </form>
-                </div>
-
-                
-
-                <div className="mx-auto grid max-w-2xl grid-cols-1 divide-y-4 divide-red-500 overflow-hidden rounded border-t border-gray-200 pt-10 shadow-lg sm:mt-12 sm:pt-12 lg:mx-0 lg:max-w-none">
-                    <div className="p-2">
-                        <span className="text-lg font-bold">Popular plans</span>
-                    </div>
-
-                    <div className="mx-auto grid grid-cols-1 gap-x-5 gap-y-8 overflow-hidden rounded border-t border-gray-200 shadow-lg sm:mt-12 sm:pt-12 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-                        <div className="mx-4 mb-4 min-h-24 rounded-lg bg-white py-3 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]">
-                            <div className="grid text-left">
-                                <span>Single Ticket</span>
-                                <span>Price / ticket</span>
-                            </div>
-
-                            <div className="my-4 grid justify-center">
-                                <img src={images} alt="images" className="mb-4"></img>
-                                <CustomButton type="filled" content="Buy">
-                                </CustomButton>
-                            </div>
-
-                        </div>
-
-                        <div className="mx-4 mb-4 min-h-24 rounded-lg bg-white py-3 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]">
-                            <div className="grid text-left">
-                                <span>Daily Ticket</span>
-                                <span>Price / ticket</span>
-                            </div>
-
-                            <div className="my-4 grid justify-center">
-                                <img src={images} alt="images" className="mb-4"></img>
-                                <CustomButton type="filled" content="Buy">
-                                </CustomButton>
-                            </div>
-
-                        </div>
-
-                        <div className="mx-4 mb-4 min-h-24 rounded-lg bg-white py-3 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]">
-                            <div className="grid text-left">
-                                <span>Monthly Ticket</span>
-                                <span>Price / ticket</span>
-                            </div>
-
-                            <div className="my-4 grid justify-center">
-                                <img src={images} alt="images" className="mb-4"></img>
-                                <CustomButton type="filled" content="Buy">
-                                </CustomButton>
-                            </div>
-
+                        <div className="flex justify-center pb-8 pt-2">
+                            <CustomButton content="Search" type="filled" onClick={(e) => Submit(e)} shape={""} />
                         </div>
                     </div>
                 </div>
+
             </div>
+            <div className="h-screen"></div>
         </AdminLayout>
     );
 };
 
 export default HomePage;
-
-

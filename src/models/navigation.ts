@@ -1,7 +1,5 @@
-import type { IconType } from "react-icons";
-
 export interface Navigation {
-  icon: IconType;
+  src: string | undefined;
   title: string;
   url: string;
   role: string;
