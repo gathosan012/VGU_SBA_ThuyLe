@@ -2,45 +2,30 @@ import { useState, useEffect, type FC } from "react"
 import AdminLayout from "../../../layouts/Layout"
 import "tw-elements-react/dist/css/tw-elements-react.min.css"
 import img from "../../../assets/images/1.jpg"
-import type { Ticket } from "../../../models/UserArea/tickets"
-import { getTickets } from "../../../services/ticketsService"
 import type { User } from "../../../models/UserArea/user"
 import { getUser } from "../../../services/userService"
 import { STORAGE } from "../../../utils/configs/storage"
 import CustomButton from "../../../components/CustomButton"
+import type { Schedule } from "../../../models/UserArea/schedule"
+import { getSchedules } from "../../../services/schedulesService"
 const TicketDetailsPage: FC = () => {
 
-    const [tickets, setTickets] = useState({} as Ticket)
     const [user, setUser] = useState({} as User)
+    const [schedule,setSchedule] = useState({} as Schedule)
 
 
-
-    const handleTickets = async () => {
-        // Loading.hourglass();
+    const handleSchedule = async () => {
         try {
-            const response = await getTickets();
-            setTickets(response.data)
-        } catch (t) {
-            console.log(t)
+            const res = await getSchedules();
+            setSchedule(res.data)
+        } catch (s) {
+            console.log(s)
         }
     }
 
     useEffect(() => {
-        handleTickets();
+        handleSchedule
     }, [])
-
-    // const handleBuyTickets = async () => {
-    //     try {
-    //         const response = await postTickets();
-    //         setBuy(response.data)
-    //     } catch (b) {
-    //         console.log(b)
-    //     }
-    // }
-
-    // useEffect(() => {
-    //     handleBuyTickets();
-    // }, [])
 
     function convertUserID(userid: any) {
     if (userid != null) {
@@ -66,6 +51,7 @@ const TicketDetailsPage: FC = () => {
     },[stringValue1])
 
     console.log(convertUserID(stringValue1))
+    console.log(schedule)
     
     return(
         <AdminLayout isFooter={true}>
@@ -95,19 +81,7 @@ const TicketDetailsPage: FC = () => {
                     <div className="px-6 py-4">
                         <img src={img} alt="images" />
 
-                        {/* <div className="flex justify-between p-2">
-                            <div className="text-sm text-gray-700">From {tickets.startStation.stationName}</div>
-                            <div className="text-sm text-gray-700">To{tickets.endStation.stationName}</div>
-                        </div> */}
-
-                        {/* <div className="grid p-2 ">
-                            <div className="text-sm text-gray-900">Date: {tickets.schedule.date}</div>
-                            <div className="text-sm text-gray-900">Time: {tickets.schedule.departureTime}</div>
-                        </div>  */}
-                        <div className="flex justify-between p-2">
-                            <span className="text-gray-900">Total</span>
-                            <span className="text-gray-900">{tickets.totalPrice}</span>
-                        </div>
+                        
 
                         <CustomButton content="Proceed to payment" type="filled" shape={""}></CustomButton>
                     </div>
@@ -115,6 +89,28 @@ const TicketDetailsPage: FC = () => {
                     <div className="p-2">
                         <div className="rounded border-gray-200 p-2 shadow-lg">
                             <span>Time date</span>
+                            {
+                                
+                                    (
+                                        <div >
+                                             <div className="flex justify-between p-2">
+                                                <div className="text-sm text-gray-700">From {schedule.id}</div>
+                                                <div className="text-sm text-gray-700">To</div>
+                                            </div> 
+
+                                            <div className="grid p-2 ">
+                                                <div className="text-sm text-gray-900">Date: {schedule.date}</div>
+                                                <div className="text-sm text-gray-900">Time: {schedule.departureTime}</div>
+                                            </div>  
+                                            <div className="flex justify-between p-2">
+                                                <span className="text-gray-900">Total</span>
+                                                <span className="text-gray-900"></span>
+                                            </div>
+                                        </div>
+                                    )
+                                
+                            }
+                           
                         </div>
                     </div>
                 </div>
